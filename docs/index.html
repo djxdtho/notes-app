@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notes — AA Elements</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Inter',sans-serif;
+  background:#0e0e0e;color:#e8e8e8;
+  min-height:100vh;overflow-x:hidden;
+}
+.ambient-grid{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+.container{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:24px 16px}
+
+/* header */
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;margin-bottom:24px;
+  background:rgba(20,20,20,0.65);backdrop-filter:blur(32px) saturate(1.6);
+  -webkit-backdrop-filter:blur(32px) saturate(1.6);
+  border:1px solid rgba(255,255,255,.08);border-radius:100px;
+  box-shadow:0 8px 40px rgba(0,0,0,.5);
+}
+header .logo{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;
+  background:linear-gradient(135deg,#00d4ff,#5b0fbe);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+header .logo span{-webkit-text-fill-color:#888}
+.auth-area{display:flex;align-items:center;gap:10px}
+.auth-area .email{font-size:.75rem;color:#888}
+.auth-area button{
+  padding:6px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);color:#ccc;font-size:.75rem;cursor:pointer;
+  transition:all .3s;font-family:'Inter',sans-serif;
+}
+.auth-area button:hover{background:rgba(255,255,255,.08);color:#fff}
+.auth-area .btn-primary{
+  background:linear-gradient(135deg,#00d4ff,#5b0fbe);border:none;color:#fff;
+}
+.auth-area .btn-primary:hover{box-shadow:0 4px 20px rgba(0,212,255,.2);transform:scale(1.04)}
+
+/* auth screens */
+.screen{display:none}
+.screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh}
+.auth-card{
+  width:100%;max-width:400px;
+  background:rgba(20,20,20,0.5);backdrop-filter:blur(20px) saturate(1.4);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.06);border-radius:24px;
+  padding:40px 28px;
+  box-shadow:0 24px 80px rgba(0,0,0,.6);
+}
+.auth-card h2{
+  font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:6px;
+}
+.auth-card p{font-size:.85rem;color:#888;margin-bottom:24px}
+.auth-card input{
+  width:100%;padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.04);color:#fff;font-size:.9rem;outline:none;
+  font-family:'Inter',sans-serif;margin-bottom:12px;transition:border-color .3s;
+}
+.auth-card input:focus{border-color:#00d4ff;box-shadow:0 0 20px rgba(0,212,255,.08)}
+.auth-card input::placeholder{color:#555}
+.auth-card .btn{
+  width:100%;padding:12px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,#00d4ff,#5b0fbe);color:#fff;
+  font-family:'Inter',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;
+  transition:all .3s;margin-top:4px;
+}
+.auth-card .btn:hover{transform:scale(1.02);box-shadow:0 8px 30px rgba(0,212,255,.2)}
+.auth-card .toggle{
+  text-align:center;margin-top:16px;font-size:.82rem;color:#888;
+}
+.auth-card .toggle span{color:#00d4ff;cursor:pointer;transition:color .3s}
+.auth-card .toggle span:hover{color:#38bdf8}
+.auth-error{color:#ef4444;font-size:.8rem;margin-bottom:12px;display:none}
+.auth-error.show{display:block}
+
+/* notes screen */
+.notes-header{display:flex;gap:10px;margin-bottom:20px}
+.notes-header input{
+  flex:1;padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.08);
+  background:rgba(20,20,20,0.5);backdrop-filter:blur(16px) saturate(1.4);
+  color:#fff;font-family:'Inter',sans-serif;font-size:.9rem;outline:none;
+  transition:border-color .3s;
+}
+.notes-header input:focus{border-color:#00d4ff}
+.notes-header input::placeholder{color:#555}
+.notes-header button{
+  width:48px;height:48px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,#00d4ff,#5b0fbe);color:#fff;
+  font-size:1.4rem;cursor:pointer;transition:all .3s;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.notes-header button:hover{transform:scale(1.06);box-shadow:0 8px 30px rgba(0,212,255,.2)}
+
+/* note card */
+.note-card{
+  background:rgba(20,20,20,0.4);backdrop-filter:blur(14px) saturate(1.3);
+  -webkit-backdrop-filter:blur(14px) saturate(1.3);
+  border:1px solid rgba(255,255,255,.05);border-radius:16px;
+  padding:18px 20px;margin-bottom:10px;
+  transition:all .3s cubic-bezier(.22,1,.36,1);
+  position:relative;
+}
+.note-card:hover{border-color:rgba(255,255,255,.1);transform:translateY(-2px)}
+.note-card .note-text{
+  font-size:.9rem;line-height:1.6;color:#ddd;white-space:pre-wrap;word-break:break-word;
+  padding-right:60px;
+}
+.note-card .note-time{font-size:.68rem;color:#555;margin-top:8px}
+.note-card .note-actions{position:absolute;top:16px;right:16px;display:flex;gap:6px}
+.note-card .note-actions button{
+  width:28px;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,.06);
+  background:rgba(255,255,255,.04);color:#666;cursor:pointer;font-size:.75rem;
+  transition:all .3s;display:flex;align-items:center;justify-content:center;
+}
+.note-card .note-actions .delete:hover{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.2);color:#ef4444}
+.note-card .note-actions .edit:hover{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.2);color:#00d4ff}
+.note-card.editing{border-color:#00d4ff;box-shadow:0 0 30px rgba(0,212,255,.08)}
+.note-card textarea{
+  width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;padding:12px;color:#fff;font-family:'Inter',sans-serif;
+  font-size:.9rem;outline:none;resize:vertical;min-height:80px;transition:border-color .3s;
+}
+.note-card textarea:focus{border-color:#00d4ff}
+.edit-actions{display:flex;gap:8px;margin-top:10px}
+.edit-actions button{
+  padding:6px 18px;border-radius:10px;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:.78rem;font-weight:500;transition:all .3s;
+}
+.edit-actions .save{background:linear-gradient(135deg,#00d4ff,#5b0fbe);color:#fff}
+.edit-actions .save:hover{box-shadow:0 4px 20px rgba(0,212,255,.2)}
+.edit-actions .cancel{background:rgba(255,255,255,.06);color:#888}
+.edit-actions .cancel:hover{background:rgba(255,255,255,.1)}
+
+/* empty state */
+.empty-notes{text-align:center;padding:60px 20px;color:#555}
+.empty-notes .icon{font-size:3rem;margin-bottom:12px;opacity:.3}
+.empty-notes h3{font-size:1rem;color:#888;margin-bottom:6px;font-weight:600}
+.empty-notes p{font-size:.82rem}
+
+/* loading */
+.loading-dots{display:inline-flex;gap:4px;padding:20px 0}
+.loading-dots span{width:6px;height:6px;border-radius:50%;background:#00d4ff;animation:dotPulse 1.2s infinite}
+.loading-dots span:nth-child(2){animation-delay:.2s}
+.loading-dots span:nth-child(3){animation-delay:.4s}
+@keyframes dotPulse{0%,100%{opacity:.2}50%{opacity:1}}
+
+/* sign out button in notes */
+.sign-out-btn{
+  padding:6px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);color:#ccc;font-size:.75rem;cursor:pointer;
+  transition:all .3s;font-family:'Inter',sans-serif;
+}
+.sign-out-btn:hover{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.2);color:#ef4444}
+
+/* responsive */
+@media(max-width:480px){
+  .container{padding:16px 12px}
+  .auth-card{padding:28px 20px}
+  .notes-header input{font-size:.85rem;padding:10px 14px}
+  .notes-header button{width:44px;height:44px;font-size:1.2rem}
+  .note-card{padding:14px 16px}
+  .note-card .note-text{font-size:.85rem;padding-right:50px}
+  header{padding:12px 16px}
+}
+</style>
+</head>
+<body>
+
+<div class="ambient-grid"></div>
+
+<div class="container">
+  <header>
+    <div class="logo">Notes<span>.</span></div>
+    <div class="auth-area" id="authArea">
+      <span class="email" id="userEmail"></span>
+      <button class="btn-primary" id="showAuthBtn" style="display:none">Sign In</button>
+      <button class="sign-out-btn" id="signOutBtn" style="display:none">Sign Out</button>
+    </div>
+  </header>
+
+  <!-- Auth Screen -->
+  <div class="screen active" id="authScreen">
+    <div class="auth-card">
+      <h2 id="authTitle">Sign In</h2>
+      <p id="authSub">Access your notes from anywhere.</p>
+      <div class="auth-error" id="authError"></div>
+      <input type="email" id="authEmail" placeholder="Email">
+      <input type="password" id="authPassword" placeholder="Password">
+      <button class="btn" id="authBtn">Sign In</button>
+      <div class="toggle">
+        Don't have an account? <span id="authToggle">Create one</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes Screen -->
+  <div class="screen" id="notesScreen">
+    <div class="notes-header">
+      <input type="text" id="noteInput" placeholder="Write a note...">
+      <button id="addNoteBtn">+</button>
+    </div>
+    <div id="notesList"></div>
+    <div class="empty-notes" id="emptyNotes">
+      <div class="icon">📝</div>
+      <h3>No notes yet</h3>
+      <p>Write your first note above.</p>
+    </div>
+  </div>
+</div>
+
+<footer style="position:relative;z-index:1;text-align:center;padding:24px;font-size:.7rem;color:#333">Notes by AA Elements</footer>
+
+<script>
+// ═══ FIREBASE CONFIG ═══
+// Replace with your Firebase project config
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.firebasestorage.app",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.firestore();
+
+// ═══ DOM REFS ═══
+const authScreen=document.getElementById('authScreen');
+const notesScreen=document.getElementById('notesScreen');
+const authTitle=document.getElementById('authTitle');
+const authSub=document.getElementById('authSub');
+const authEmail=document.getElementById('authEmail');
+const authPassword=document.getElementById('authPassword');
+const authBtn=document.getElementById('authBtn');
+const authToggle=document.getElementById('authToggle');
+const authError=document.getElementById('authError');
+const showAuthBtn=document.getElementById('showAuthBtn');
+const signOutBtn=document.getElementById('signOutBtn');
+const userEmail=document.getElementById('userEmail');
+const noteInput=document.getElementById('noteInput');
+const addNoteBtn=document.getElementById('addNoteBtn');
+const notesList=document.getElementById('notesList');
+const emptyNotes=document.getElementById('emptyNotes');
+
+let isSignUp=false;
+let currentUser=null;
+let unsubscribe=null;
+
+// ═══ AUTH ═══
+function showError(msg){authError.textContent=msg;authError.classList.add('show')}
+function hideError(){authError.classList.remove('show')}
+
+authToggle.addEventListener('click',()=>{
+  isSignUp=!isSignUp;
+  authTitle.textContent=isSignUp?'Create Account':'Sign In';
+  authSub.textContent=isSignUp?'Create an account to start saving notes.':'Access your notes from anywhere.';
+  authBtn.textContent=isSignUp?'Create Account':'Sign In';
+  authToggle.textContent=isSignUp?'Sign in':'Create one';
+  hideError();
+});
+
+authBtn.addEventListener('click',async()=>{
+  const email=authEmail.value.trim();
+  const pass=authPassword.value.trim();
+  if(!email||!pass){showError('Fill in all fields.');return}
+  if(pass.length<6){showError('Password must be at least 6 characters.');return}
+  hideError();
+  authBtn.disabled=true;authBtn.textContent='Loading...';
+  try{
+    if(isSignUp){
+      await auth.createUserWithEmailAndPassword(email,pass);
+    }else{
+      await auth.signInWithEmailAndPassword(email,pass);
+    }
+  }catch(e){
+    showError(e.message.replace('Firebase: ','').replace(/\(.*\)/,'').trim());
+    authBtn.disabled=false;authBtn.textContent=isSignUp?'Create Account':'Sign In';
+  }
+});
+
+showAuthBtn.addEventListener('click',()=>{
+  authScreen.classList.add('active');
+  notesScreen.classList.remove('active');
+  showAuthBtn.style.display='none';
+});
+
+signOutBtn.addEventListener('click',()=>{
+  auth.signOut();
+});
+
+auth.onAuthStateChanged(user=>{
+  authBtn.disabled=false;
+  authBtn.textContent=isSignUp?'Create Account':'Sign In';
+  if(user){
+    currentUser=user;
+    authScreen.classList.remove('active');
+    notesScreen.classList.add('active');
+    showAuthBtn.style.display='none';
+    signOutBtn.style.display='';
+    userEmail.textContent=user.email;
+    authEmail.value='';authPassword.value='';hideError();
+    loadNotes();
+  }else{
+    currentUser=null;
+    if(unsubscribe){unsubscribe();unsubscribe=null}
+    authScreen.classList.add('active');
+    notesScreen.classList.remove('active');
+    showAuthBtn.style.display='';
+    signOutBtn.style.display='none';
+    userEmail.textContent='';
+    notesList.innerHTML='';
+    emptyNotes.style.display='block';
+  }
+});
+
+// ═══ NOTES ═══
+function loadNotes(){
+  if(!currentUser)return;
+  notesList.innerHTML='<div class="loading-dots"><span></span><span></span><span></span></div>';
+  emptyNotes.style.display='none';
+  unsubscribe=db.collection('notes')
+    .where('uid','==',currentUser.uid)
+    .orderBy('createdAt','desc')
+    .onSnapshot(snapshot=>{
+      notesList.innerHTML='';
+      if(snapshot.empty){emptyNotes.style.display='block';return}
+      emptyNotes.style.display='none';
+      snapshot.forEach(doc=>{
+        const data=doc.data();
+        appendNote(doc.id,data.text,data.createdAt?.toDate()||new Date());
+      });
+    },err=>{
+      notesList.innerHTML='<p style="text-align:center;color:#ef4444;font-size:.85rem">Failed to load notes.</p>';
+    });
+}
+
+function appendNote(id,text,date){
+  const div=document.createElement('div');div.className='note-card';
+  div.dataset.id=id;
+  const timeStr=date.toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  div.innerHTML=`
+    <div class="note-text">${escapeHtml(text)}</div>
+    <div class="note-time">${timeStr}</div>
+    <div class="note-actions">
+      <button class="edit" onclick="editNote('${id}')">✎</button>
+      <button class="delete" onclick="deleteNote('${id}')">✕</button>
+    </div>`;
+  notesList.prepend(div);
+}
+
+function escapeHtml(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
+
+addNoteBtn.addEventListener('click',addNote);
+noteInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();addNote()}});
+
+async function addNote(){
+  const text=noteInput.value.trim();
+  if(!text||!currentUser)return;
+  addNoteBtn.disabled=true;
+  try{
+    await db.collection('notes').add({
+      uid:currentUser.uid,
+      text:text,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    noteInput.value='';
+    emptyNotes.style.display='none';
+  }catch(e){console.error(e)}
+  addNoteBtn.disabled=false;
+}
+
+async function deleteNote(id){
+  if(!confirm('Delete this note?'))return;
+  try{await db.collection('notes').doc(id).delete()}catch(e){console.error(e)}
+}
+
+function editNote(id){
+  const card=document.querySelector(`.note-card[data-id="${id}"]`);
+  if(!card||card.classList.contains('editing'))return;
+  const textEl=card.querySelector('.note-text');
+  const original=textEl.textContent;
+  card.classList.add('editing');
+  card.innerHTML=`
+    <textarea id="editArea">${escapeHtml(original)}</textarea>
+    <div class="edit-actions">
+      <button class="save" onclick="saveEdit('${id}')">Save</button>
+      <button class="cancel" onclick="cancelEdit('${id}','${escapeHtml(original)}')">Cancel</button>
+    </div>`;
+  card.querySelector('textarea').focus();
+}
+
+async function saveEdit(id){
+  const card=document.querySelector(`.note-card[data-id="${id}"]`);
+  const text=card.querySelector('textarea').value.trim();
+  if(!text)return;
+  try{
+    await db.collection('notes').doc(id).update({text:text});
+  }catch(e){console.error(e)}
+}
+
+function cancelEdit(id,original){
+  const card=document.querySelector(`.note-card[data-id="${id}"]`);
+  if(!card)return;
+  const text=card.querySelector('textarea').value;
+  card.classList.remove('editing');
+  const timeStr=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  card.innerHTML=`
+    <div class="note-text">${escapeHtml(text||original)}</div>
+    <div class="note-time">${timeStr}</div>
+    <div class="note-actions">
+      <button class="edit" onclick="editNote('${id}')">✎</button>
+      <button class="delete" onclick="deleteNote('${id}')">✕</button>
+    </div>`;
+}
+
+</script>
+</body>
+</html>
