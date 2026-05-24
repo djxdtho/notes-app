@@ -87,6 +87,8 @@ header .logo span{-webkit-text-fill-color:#888}
 .auth-card .toggle span:hover{color:#38bdf8}
 .auth-error{color:#ef4444;font-size:.8rem;margin-bottom:12px;display:none}
 .auth-error.show{display:block}
+.notes-error{color:#ef4444;font-size:.8rem;margin-bottom:12px;display:none;text-align:center}
+.notes-error.show{display:block}
 .divider{display:flex;align-items:center;gap:12px;margin:14px 0;color:#555;font-size:.75rem}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
 .btn-google{
@@ -225,6 +227,7 @@ header .logo span{-webkit-text-fill-color:#888}
       <input type="text" id="noteInput" placeholder="Write a note...">
       <button id="addNoteBtn">+</button>
     </div>
+    <div class="notes-error" id="notesError"></div>
     <div id="notesList"></div>
     <div class="empty-notes" id="emptyNotes">
       <div class="icon">📝</div>
@@ -270,6 +273,7 @@ const noteInput=document.getElementById('noteInput');
 const addNoteBtn=document.getElementById('addNoteBtn');
 const notesList=document.getElementById('notesList');
 const emptyNotes=document.getElementById('emptyNotes');
+const notesError=document.getElementById('notesError');
 
 let isSignUp=false;
 let currentUser=null;
@@ -278,6 +282,8 @@ let unsubscribe=null;
 // ═══ AUTH ═══
 function showError(msg){authError.textContent=msg;authError.classList.add('show')}
 function hideError(){authError.classList.remove('show')}
+function showNotesError(msg){notesError.textContent=msg;notesError.classList.add('show');setTimeout(()=>notesError.classList.remove('show'),5000)}
+function hideNotesError(){notesError.classList.remove('show')}
 
 authToggle.addEventListener('click',()=>{
   isSignUp=!isSignUp;
@@ -401,7 +407,7 @@ async function addNote(){
     });
     noteInput.value='';
     emptyNotes.style.display='none';
-  }catch(e){console.error(e)}
+  }catch(e){showNotesError(e.message)}
   addNoteBtn.disabled=false;
 }
 
