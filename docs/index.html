@@ -2,57 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>Notes — AA Elements</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--accent:#00d4ff;--accent2:#5b0fbe;--bg:#0a0a0a;--card:rgba(22,22,22,.92);--border:rgba(255,255,255,.06);--text:#f0f0f0;--muted:#666}
-body{
-  font-family:'Inter',-apple-system,sans-serif;
-  background:var(--bg);color:var(--text);
-  min-height:100vh;-webkit-font-smoothing:antialiased;
-}
-
-/* header */
-header{
-  position:sticky;top:0;z-index:50;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 20px;margin-bottom:2px;
-  background:rgba(10,10,10,.88);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
-  border-bottom:1px solid var(--border);
-}
-header h1{
-  font-size:1.5rem;font-weight:700;letter-spacing:-.03em;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.auth-area{display:flex;align-items:center;gap:10px}
-.auth-area .email{font-size:.72rem;color:var(--muted);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.auth-area button{
-  padding:5px 14px;border-radius:100px;border:1px solid var(--border);
-  background:rgba(255,255,255,.04);color:#aaa;font-size:.72rem;cursor:pointer;
-  transition:all .3s;font-family:'Inter',sans-serif;white-space:nowrap;
-}
-.auth-area button:hover{background:rgba(255,255,255,.08);color:#fff}
-.auth-area .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff}
-
-/* screens */
-.screen{display:none}
-.screen.active{display:block}
+:root{--accent:#00d4ff;--accent2:#5b0fbe;--bg:#0a0a0a;--card:rgba(22,22,22,.92);--border:rgba(255,255,255,.06);--text:#f0f0f0;--muted:#666;--sidebar:240px}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden;height:100dvh}
 
 /* auth */
-#authScreen.active{display:flex;align-items:center;justify-content:center;min-height:90vh}
+.auth-overlay{
+  position:fixed;inset:0;z-index:999;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg);
+}
 .auth-card{
-  width:100%;max-width:380px;margin:0 16px;
-  background:var(--card);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border:1px solid var(--border);border-radius:28px;padding:36px 24px;
+  width:100%;max-width:380px;margin:16px;
+  background:var(--card);border:1px solid var(--border);border-radius:28px;padding:36px 24px;
   box-shadow:0 32px 80px rgba(0,0,0,.7);
 }
 .auth-card h2{font-size:1.4rem;font-weight:700;margin-bottom:4px}
@@ -62,15 +34,14 @@ header h1{
   background:rgba(255,255,255,.04);color:#fff;font-size:.88rem;outline:none;
   font-family:'Inter',sans-serif;margin-bottom:10px;transition:border-color .3s;
 }
-.auth-card input:focus{border-color:var(--accent);box-shadow:0 0 24px rgba(0,212,255,.06)}
+.auth-card input:focus{border-color:var(--accent)}
 .auth-card input::placeholder{color:#444}
 .auth-card .btn{
   width:100%;padding:12px;border-radius:14px;border:none;
   background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
-  font-family:'Inter',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;
-  transition:all .3s;margin-top:2px;
+  font-family:'Inter',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .3s;
 }
-.auth-card .btn:hover{transform:scale(1.02);box-shadow:0 8px 30px rgba(0,212,255,.15)}
+.auth-card .btn:hover{box-shadow:0 8px 30px rgba(0,212,255,.15)}
 .divider{display:flex;align-items:center;gap:12px;margin:14px 0;color:#444;font-size:.72rem}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
 .btn-google{
@@ -84,138 +55,244 @@ header h1{
 .toggle span{color:var(--accent);cursor:pointer}
 .auth-error{color:#ef4444;font-size:.78rem;margin-bottom:10px;display:none}
 .auth-error.show{display:block}
-.notes-error{color:#ef4444;font-size:.78rem;padding:8px 16px;text-align:center;display:none}
-.notes-error.show{display:block}
 
-/* notes list */
-.notes-count{font-size:.72rem;color:var(--muted);padding:12px 20px 6px;font-weight:500}
-.notes-list{padding:0 12px 100px}
+/* app layout */
+.app{display:none;height:100dvh;flex-direction:column}
+.app.active{display:flex}
+.topbar{
+  display:flex;align-items:center;gap:12px;padding:10px 16px;
+  background:rgba(10,10,10,.92);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  border-bottom:1px solid var(--border);z-index:50;flex-shrink:0;
+}
+.topbar .menu-btn{
+  display:none;width:36px;height:36px;border-radius:10px;border:none;
+  background:rgba(255,255,255,.04);color:#888;font-size:1.1rem;cursor:pointer;
+  align-items:center;justify-content:center;flex-shrink:0;
+}
+.topbar h2{font-size:1.1rem;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topbar .top-actions{display:flex;gap:6px}
+.topbar .top-actions button{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--border);
+  background:rgba(255,255,255,.04);color:#888;cursor:pointer;font-size:.8rem;
+  transition:all .3s;display:flex;align-items:center;justify-content:center;
+}
+.topbar .top-actions button:hover{background:rgba(255,255,255,.08);color:#fff}
+.user-badge{font-size:.7rem;color:var(--muted);padding:4px 10px;border-radius:100px;border:1px solid var(--border);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.body{display:flex;flex:1;overflow:hidden}
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;background:rgba(14,14,14,.95);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;
+  overflow:hidden;transition:transform .35s cubic-bezier(.22,1,.36,1);
+}
+.sidebar-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px 8px;font-size:.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;
+}
+.sidebar-header button{
+  width:28px;height:28px;border-radius:8px;border:none;
+  background:rgba(255,255,255,.04);color:#888;cursor:pointer;font-size:.85rem;
+  display:flex;align-items:center;justify-content:center;transition:all .3s;
+}
+.sidebar-header button:hover{background:rgba(255,255,255,.08);color:#fff}
+.sidebar-list{flex:1;overflow-y:auto;padding:4px 8px 60px}
+.sidebar-list::-webkit-scrollbar{width:3px}
+.sidebar-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:3px}
+.folder-item,.sidebar-item{
+  display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;
+  cursor:pointer;transition:all .2s;font-size:.82rem;color:#aaa;position:relative;
+  user-select:none;-webkit-user-select:none;
+}
+.folder-item:hover,.sidebar-item:hover{background:rgba(255,255,255,.04);color:#fff}
+.folder-item.active,.sidebar-item.active{background:rgba(0,212,255,.08);color:var(--accent)}
+.folder-item .icon,.sidebar-item .icon{width:20px;text-align:center;flex-shrink:0;font-size:.75rem;opacity:.7}
+.folder-item .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.folder-item .count{font-size:.65rem;color:var(--muted)}
+.folder-item .folder-actions{
+  display:flex;gap:2px;opacity:0;transition:opacity .2s;margin-left:auto;
+}
+.folder-item:hover .folder-actions{opacity:1}
+.folder-item .folder-actions button{
+  width:22px;height:22px;border-radius:6px;border:none;
+  background:transparent;color:#555;cursor:pointer;font-size:.55rem;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.folder-item .folder-actions button:hover{background:rgba(255,255,255,.06);color:#fff}
+.subfolder{padding-left:28px;font-size:.78rem}
+
+/* main area */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.main-header{padding:12px 20px 4px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.main-header .count{font-size:.72rem;color:var(--muted)}
+.main-header .sort-btn{font-size:.72rem;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+
+.notes-grid{flex:1;overflow-y:auto;padding:4px 12px 100px}
+.notes-grid::-webkit-scrollbar{width:4px}
+.notes-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:4px}
 .note-card{
   display:flex;flex-direction:column;
   background:var(--card);border:1px solid var(--border);
-  border-radius:16px;padding:14px 16px;margin-bottom:8px;
-  cursor:pointer;transition:all .35s cubic-bezier(.22,1,.36,1);
-  position:relative;
+  border-radius:14px;padding:12px 14px;margin-bottom:6px;
+  cursor:pointer;transition:all .25s cubic-bezier(.22,1,.36,1);position:relative;
 }
 .note-card:active{transform:scale(.98)}
-.note-card .note-title{
-  font-size:.88rem;font-weight:600;color:#fff;margin-bottom:3px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:70px;
-}
+.note-card.pinned{border-left:2px solid var(--accent)}
+.note-card .top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.note-card .note-title{font-size:.86rem;font-weight:600;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
 .note-card .note-preview{
-  font-size:.78rem;color:var(--muted);line-height:1.4;
+  font-size:.76rem;color:var(--muted);line-height:1.4;margin-top:2px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-  padding-right:70px;
 }
-.note-card .note-meta{
-  position:absolute;top:14px;right:16px;
-  font-size:.65rem;color:#444;font-weight:500;
+.note-card .note-meta{display:flex;align-items:center;gap:8px;margin-top:6px}
+.note-card .note-date{font-size:.62rem;color:#333}
+.note-card .pin-badge{font-size:.55rem;color:var(--accent)}
+.note-card .locked-badge{font-size:.58rem;color:var(--muted)}
+.note-card .card-actions{
+  position:absolute;top:10px;right:10px;display:flex;gap:2px;opacity:0;transition:opacity .2s;
 }
-.note-card .delete-btn{
-  position:absolute;bottom:14px;right:16px;
-  width:24px;height:24px;border-radius:8px;border:1px solid transparent;
-  background:transparent;color:#333;cursor:pointer;font-size:.6rem;
-  transition:all .3s;display:flex;align-items:center;justify-content:center;
-}
-.note-card:hover .delete-btn{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.12);color:#ef4444}
-.note-card .char-count{
-  font-size:.6rem;color:#333;margin-top:4px;
-}
-
-/* compose button */
-.compose-btn{
-  position:fixed;bottom:28px;right:28px;z-index:60;
-  width:56px;height:56px;border-radius:50%;border:none;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
-  font-size:1.8rem;font-weight:300;cursor:pointer;
-  box-shadow:0 8px 32px rgba(0,212,255,.25);
-  transition:all .3s cubic-bezier(.22,1,.36,1);
+.note-card:hover .card-actions{opacity:1}
+.note-card .card-actions button{
+  width:24px;height:24px;border-radius:6px;border:none;background:transparent;
+  color:#444;cursor:pointer;font-size:.58rem;transition:all .2s;
   display:flex;align-items:center;justify-content:center;
 }
-.compose-btn:hover{transform:scale(1.08);box-shadow:0 12px 40px rgba(0,212,255,.35)}
-.compose-btn:active{transform:scale(.92)}
+.note-card .card-actions button:hover{background:rgba(255,255,255,.06);color:#fff}
+.empty-state{text-align:center;padding:80px 20px}
+.empty-state .icon{font-size:2.6rem;margin-bottom:10px;opacity:.12}
+.empty-state h3{font-size:.95rem;color:#555;font-weight:600;margin-bottom:4px}
+.empty-state p{font-size:.78rem;color:#333}
+.loading{text-align:center;padding:30px;color:#444;font-size:.8rem}
 
-/* empty */
-.empty-notes{text-align:center;padding:80px 20px}
-.empty-notes .icon{font-size:3rem;margin-bottom:12px;opacity:.15}
-.empty-notes h3{font-size:1rem;color:#555;font-weight:600;margin-bottom:4px}
-.empty-notes p{font-size:.8rem;color:#333}
+/* editor */
+.editor-panel{
+  position:fixed;inset:0;z-index:200;
+  display:none;flex-direction:column;
+  background:var(--bg);
+}
+.editor-panel.active{display:flex}
+.editor-topbar{
+  display:flex;align-items:center;gap:8px;padding:8px 12px;
+  background:rgba(10,10,10,.92);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.editor-topbar .back-btn{
+  width:34px;height:34px;border-radius:10px;border:none;
+  background:transparent;color:#888;font-size:1.1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+.editor-topbar .back-btn:hover{background:rgba(255,255,255,.06);color:#fff}
+.editor-topbar .title-input{
+  flex:1;background:transparent;border:none;color:#fff;
+  font-family:'Inter',sans-serif;font-size:.95rem;font-weight:600;padding:6px 0;outline:none;
+}
+.editor-topbar .title-input::placeholder{color:#333}
+.editor-topbar .editor-actions{display:flex;gap:4px}
+.editor-topbar .editor-actions button{
+  width:32px;height:32px;border-radius:8px;border:1px solid transparent;
+  background:transparent;color:#888;cursor:pointer;font-size:.72rem;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.editor-topbar .editor-actions button:hover{background:rgba(255,255,255,.06);color:#fff;border-color:var(--border)}
+.editor-topbar .editor-actions .pin-btn.active{color:var(--accent)}
+.editor-topbar .editor-actions .lock-btn.active{color:var(--accent)}
+#editorContainer{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#editorContainer .ql-toolbar{
+  background:rgba(14,14,14,.95);border:none;border-bottom:1px solid var(--border);
+  padding:6px 12px;flex-shrink:0;position:sticky;top:0;z-index:10;
+}
+#editorContainer .ql-toolbar .ql-formats{margin-right:8px}
+#editorContainer .ql-toolbar button{color:#888}
+#editorContainer .ql-toolbar button:hover{color:#fff}
+#editorContainer .ql-toolbar button.ql-active{color:var(--accent)}
+#editorContainer .ql-toolbar .ql-picker{color:#888}
+#editorContainer .ql-toolbar .ql-picker:hover{color:#fff}
+#editorContainer .ql-container{
+  flex:1;overflow-y:auto;font-size:.92rem;line-height:1.7;
+  background:transparent;
+}
+#editorContainer .ql-editor{padding:20px 24px;min-height:100%;color:#ddd}
+#editorContainer .ql-editor:focus{color:#fff}
+#editorContainer .ql-editor.ql-blank::before{color:#333;font-style:normal}
+#editorContainer .ql-editor h1{font-size:1.6rem;font-weight:700;margin-bottom:8px}
+#editorContainer .ql-editor h2{font-size:1.2rem;font-weight:600;margin-bottom:6px}
+#editorContainer .ql-editor p{margin-bottom:6px}
+#editorContainer .ql-editor blockquote{
+  border-left:3px solid var(--accent);padding-left:16px;color:#888;margin:12px 0;
+}
+#editorContainer .ql-editor pre{
+  background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;
+  padding:12px;font-family:'SF Mono','Menlo','Monaco',monospace;font-size:.82rem;
+}
+#editorContainer .ql-editor ul li,.ql-editor ol li{margin-bottom:4px}
 
-/* loading */
-.loading{text-align:center;padding:40px 0;color:#444;font-size:.8rem}
+/* search bar */
+.search-wrap{padding:8px 12px 4px;flex-shrink:0}
+.search-wrap input{
+  width:100%;padding:8px 14px;border-radius:12px;border:1px solid var(--border);
+  background:rgba(255,255,255,.04);color:#fff;font-family:'Inter',sans-serif;
+  font-size:.82rem;outline:none;transition:border-color .3s;
+}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-wrap input::placeholder{color:#333}
 
-/* modal */
+/* modals */
 .modal-overlay{
-  position:fixed;inset:0;z-index:100;
+  position:fixed;inset:0;z-index:300;
   background:rgba(0,0,0,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  display:none;align-items:flex-end;justify-content:center;
-  animation:fadeIn .3s ease;
+  display:none;align-items:center;justify-content:center;
 }
 .modal-overlay.active{display:flex}
-.modal-overlay.active .modal-sheet{animation:slideUp .4s cubic-bezier(.22,1,.36,1)}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-box{
+  width:90%;max-width:360px;background:var(--card);border:1px solid var(--border);
+  border-radius:20px;padding:24px;box-shadow:0 32px 80px rgba(0,0,0,.6);
+}
+.modal-box h3{font-size:1rem;font-weight:600;margin-bottom:4px}
+.modal-box .modal-sub{font-size:.78rem;color:var(--muted);margin-bottom:16px}
+.modal-box input,.modal-box select{
+  width:100%;padding:10px 14px;border-radius:12px;border:1px solid var(--border);
+  background:rgba(255,255,255,.04);color:#fff;font-family:'Inter',sans-serif;
+  font-size:.85rem;outline:none;margin-bottom:12px;
+}
+.modal-box input:focus{border-color:var(--accent)}
+.modal-box input::placeholder{color:#444}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
+.modal-actions button{
+  padding:8px 18px;border-radius:10px;border:none;font-family:'Inter',sans-serif;
+  font-size:.8rem;font-weight:500;cursor:pointer;transition:all .3s;
+}
+.modal-actions .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.modal-actions .btn-primary:hover{box-shadow:0 4px 20px rgba(0,212,255,.15)}
+.modal-actions .btn-secondary{background:rgba(255,255,255,.06);color:#888}
+.modal-actions .btn-secondary:hover{background:rgba(255,255,255,.1)}
+.modal-actions .btn-danger{background:rgba(239,68,68,.12);color:#ef4444}
+.modal-actions .btn-danger:hover{background:rgba(239,68,68,.2)}
 
-.modal-sheet{
-  width:100%;max-width:520px;max-height:92vh;
-  background:var(--card);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
-  border-radius:24px 24px 0 0;padding:20px 20px 32px;
-  box-shadow:0 -8px 60px rgba(0,0,0,.6);
-  display:flex;flex-direction:column;
-  position:relative;
+/* move modal folder list */
+.folder-list{max-height:200px;overflow-y:auto;margin-bottom:12px}
+.folder-list .fl-item{
+  padding:8px 12px;border-radius:8px;cursor:pointer;font-size:.82rem;color:#aaa;
+  transition:all .2s;
 }
-.modal-handle{
-  width:36px;height:4px;border-radius:4px;background:rgba(255,255,255,.1);
-  margin:0 auto 16px;
-}
-.modal-sheet .modal-header{
-  display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;
-}
-.modal-sheet .modal-header button{
-  padding:6px 16px;border-radius:100px;border:none;
-  font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .3s;
-}
-.modal-sheet .modal-header .cancel-btn{background:rgba(255,255,255,.06);color:#888}
-.modal-sheet .modal-header .cancel-btn:hover{background:rgba(255,255,255,.1)}
-.modal-sheet .modal-header .save-btn{
-  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
-  padding:6px 20px;
-}
-.modal-sheet .modal-header .save-btn:hover{box-shadow:0 4px 20px rgba(0,212,255,.2)}
-.modal-sheet textarea{
-  width:100%;flex:1;min-height:200px;max-height:65vh;
-  background:transparent;border:none;color:#fff;
-  font-family:'Inter',sans-serif;font-size:.95rem;line-height:1.7;
-  outline:none;resize:none;padding:4px 0;
-}
-.modal-sheet textarea::placeholder{color:#333}
-
-/* sign out */
-.sign-out-btn:hover{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.15);color:#ef4444}
+.folder-list .fl-item:hover,.folder-list .fl-item.active{background:rgba(0,212,255,.06);color:var(--accent)}
+.folder-list .fl-sub{padding-left:24px}
 
 /* responsive */
-@media(max-width:480px){
-  header{padding:12px 16px}
-  header h1{font-size:1.3rem}
-  .compose-btn{width:52px;height:52px;font-size:1.6rem;bottom:20px;right:20px}
-  .note-card{padding:12px 14px}
-  .modal-sheet{padding:16px 16px 28px;border-radius:20px 20px 0 0}
+@media(max-width:768px){
+  .sidebar{position:fixed;top:0;left:0;bottom:0;z-index:100;width:280px;transform:translateX(-100%);background:rgba(10,10,10,.98)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-backdrop{position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.5);display:none}
+  .sidebar-backdrop.show{display:block}
+  .topbar .menu-btn{display:flex}
+  .note-card{padding:10px 12px}
+  .note-card .card-actions{opacity:1}
+  #editorContainer .ql-editor{padding:14px 16px}
 }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Notes</h1>
-  <div class="auth-area">
-    <span class="email" id="userEmail"></span>
-    <button class="btn-primary" id="showAuthBtn" style="display:none">Sign In</button>
-    <button class="sign-out-btn" id="signOutBtn" style="display:none">Sign Out</button>
-  </div>
-</header>
-
 <!-- Auth -->
-<div class="screen active" id="authScreen">
+<div class="auth-overlay" id="authOverlay">
   <div class="auth-card">
     <h2 id="authTitle">Sign In</h2>
     <p class="sub" id="authSub">Access your notes anywhere.</p>
@@ -229,185 +306,591 @@ header h1{
   </div>
 </div>
 
-<!-- Notes -->
-<div class="screen" id="notesScreen">
-  <div class="notes-count" id="notesCount"></div>
-  <div class="notes-error" id="notesError"></div>
-  <div class="notes-list" id="notesList"></div>
-  <div class="empty-notes" id="emptyNotes">
-    <div class="icon">📝</div>
-    <h3>No Notes Yet</h3>
-    <p>Tap + to write your first note.</p>
-  </div>
-  <button class="compose-btn" id="composeBtn">+</button>
-</div>
+<!-- App -->
+<div class="app" id="app">
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-<!-- Modal -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-header">
-      <button class="cancel-btn" id="modalCancel">Cancel</button>
-      <button class="save-btn" id="modalSave">Save</button>
+  <div class="topbar">
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <h2 id="viewTitle">All Notes</h2>
+    <div class="top-actions">
+      <button id="searchToggle" title="Search">🔍</button>
+      <span class="user-badge" id="userBadge"></span>
+      <button id="signOutTop" title="Sign out">⏻</button>
     </div>
-    <textarea id="modalText" placeholder="Write something..."></textarea>
+  </div>
+
+  <div class="body">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        Folders
+        <button id="newFolderBtn" title="New Folder">+</button>
+      </div>
+      <div class="sidebar-list" id="folderList">
+        <div class="sidebar-item active" data-view="all"><span class="icon">📄</span><span class="name">All Notes</span></div>
+        <div class="sidebar-item" data-view="pinned"><span class="icon">📌</span><span class="name">Pinned</span></div>
+        <div class="folder-area" id="folderArea"></div>
+        <div class="sidebar-item" data-view="trash"><span class="icon">🗑️</span><span class="name">Trash</span></div>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+      <div class="search-wrap" id="searchWrap" style="display:none">
+        <input type="text" id="searchInput" placeholder="Search notes...">
+      </div>
+      <div class="main-header">
+        <span class="count" id="notesCount"></span>
+        <button class="sort-btn" id="sortBtn">Newest ↓</button>
+      </div>
+      <div class="notes-grid" id="notesGrid">
+        <div class="empty-state" id="emptyState">
+          <div class="icon">📝</div>
+          <h3>No Notes Yet</h3>
+          <p>Tap + to create your first note.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compose FAB -->
+  <button style="position:fixed;bottom:24px;right:24px;z-index:50;width:54px;height:54px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:1.8rem;font-weight:300;cursor:pointer;box-shadow:0 8px 32px rgba(0,212,255,.25);transition:all .3s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;justify-content:center" id="composeBtn" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">+</button>
+</div>
+
+<!-- Editor Panel -->
+<div class="editor-panel" id="editorPanel">
+  <div class="editor-topbar">
+    <button class="back-btn" id="editorBack">←</button>
+    <input class="title-input" id="noteTitleInput" placeholder="Note title...">
+    <div class="editor-actions">
+      <button id="pinToggle" title="Pin">📌</button>
+      <button id="lockToggle" title="Lock">🔒</button>
+      <button id="moveBtn" title="Move to folder">📂</button>
+      <button id="duplicateBtn" title="Duplicate">📋</button>
+      <button id="deleteBtn" title="Delete">🗑️</button>
+    </div>
+  </div>
+  <div id="editorContainer"></div>
+</div>
+
+<!-- New Folder Modal -->
+<div class="modal-overlay" id="folderModal">
+  <div class="modal-box">
+    <h3 id="folderModalTitle">New Folder</h3>
+    <p class="modal-sub" id="folderModalSub">Enter a name for your folder.</p>
+    <input type="text" id="folderNameInput" placeholder="Folder name">
+    <div class="modal-actions">
+      <button class="btn-secondary" id="folderModalCancel">Cancel</button>
+      <button class="btn-primary" id="folderModalConfirm">Create</button>
+    </div>
   </div>
 </div>
 
-<footer style="text-align:center;padding:20px;font-size:.65rem;color:#222">Notes by AA Elements</footer>
+<!-- Move Note Modal -->
+<div class="modal-overlay" id="moveModal">
+  <div class="modal-box">
+    <h3>Move Note</h3>
+    <p class="modal-sub">Select a folder.</p>
+    <div class="folder-list" id="moveFolderList"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="moveModalCancel">Cancel</button>
+      <button class="btn-primary" id="moveModalConfirm" style="display:none">Move</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lock Modal -->
+<div class="modal-overlay" id="lockModal">
+  <div class="modal-box">
+    <h3 id="lockModalTitle">Lock Note</h3>
+    <p class="modal-sub">Set a password to lock this note.</p>
+    <input type="password" id="lockPasswordInput" placeholder="Password">
+    <input type="password" id="lockPasswordConfirm" placeholder="Confirm password">
+    <div class="modal-actions">
+      <button class="btn-secondary" id="lockModalCancel">Cancel</button>
+      <button class="btn-primary" id="lockModalConfirm">Lock</button>
+    </div>
+  </div>
+</div>
+
+<!-- Unlock Modal -->
+<div class="modal-overlay" id="unlockModal">
+  <div class="modal-box">
+    <h3>Unlock Note</h3>
+    <p class="modal-sub">Enter the password to view this note.</p>
+    <input type="password" id="unlockPasswordInput" placeholder="Password">
+    <div class="auth-error" id="unlockError"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="unlockModalCancel">Cancel</button>
+      <button class="btn-primary" id="unlockModalConfirm">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<footer style="display:none">Notes by AA Elements</footer>
 
 <script>
+// ═══ FIREBASE ═══
 const firebaseConfig = {
   apiKey: "AIzaSyDOZvxIIkUicNcewpG1vGUxiBfB1pkOv3w",
   authDomain: "notesapp-fab8a.firebaseapp.com",
   projectId: "notesapp-fab8a",
   storageBucket: "notesapp-fab8a.firebasestorage.app",
   messagingSenderId: "726301601867",
-  appId: "1:726301601867:web:473ac05cd423707b779dce",
-  measurementId: "G-BN2TF8ZJDM"
+  appId: "1:726301601867:web:473ac05cd423707b779dce"
 };
-
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
 const db=firebase.firestore();
 
-const authScreen=document.getElementById('authScreen');
-const notesScreen=document.getElementById('notesScreen');
-const authTitle=document.getElementById('authTitle');
-const authSub=document.getElementById('authSub');
-const authEmail=document.getElementById('authEmail');
-const authPassword=document.getElementById('authPassword');
-const authBtn=document.getElementById('authBtn');
-const authToggle=document.getElementById('authToggle');
-const authError=document.getElementById('authError');
-const showAuthBtn=document.getElementById('showAuthBtn');
-const signOutBtn=document.getElementById('signOutBtn');
-const userEmail=document.getElementById('userEmail');
-const notesList=document.getElementById('notesList');
-const notesCount=document.getElementById('notesCount');
-const notesError=document.getElementById('notesError');
-const emptyNotes=document.getElementById('emptyNotes');
-const composeBtn=document.getElementById('composeBtn');
-const modalOverlay=document.getElementById('modalOverlay');
-const modalText=document.getElementById('modalText');
-const modalSave=document.getElementById('modalSave');
-const modalCancel=document.getElementById('modalCancel');
-
-let isSignUp=false;
+// ═══ STATE ═══
 let currentUser=null;
-let unsubscribe=null;
+let unsubscribeNotes=null;
+let unsubscribeFolders=null;
+let folders=[];
+let notes=[];
+let viewing='all'; // 'all'|'pinned'|'trash'|folderId
+let sortBy='newest'; // 'newest'|'oldest'|'title'
 let editingId=null;
+let quill=null;
+let unlockingId=null;
+let searchQuery='';
 
-function showError(msg){authError.textContent=msg;authError.classList.add('show')}
-function hideError(){authError.classList.remove('show')}
-function showNotesError(msg){notesError.textContent=msg;notesError.classList.add('show');setTimeout(()=>notesError.classList.remove('show'),5000)}
+// ═══ DOM ═══
+const $=id=>document.getElementById(id);
+const authOverlay=$('authOverlay'),authTitle=$('authTitle'),authSub=$('authSub');
+const authEmail=$('authEmail'),authPassword=$('authPassword'),authBtn=$('authBtn');
+const authToggle=$('authToggle'),authError=$('authError'),googleBtn=$('googleBtn');
+const app=$('app'),viewTitle=$('viewTitle'),sidebar=$('sidebar');
+const folderList=$('folderList'),folderArea=$('folderArea');
+const notesGrid=$('notesGrid'),notesCount=$('notesCount'),emptyState=$('emptyState');
+const composeBtn=$('composeBtn'),menuBtn=$('menuBtn'),sidebarBackdrop=$('sidebarBackdrop');
+const editorPanel=$('editorPanel'),noteTitleInput=$('noteTitleInput');
+const editorBack=$('editorBack'),pinToggle=$('pinToggle'),lockToggle=$('lockToggle');
+const moveBtn=$('moveBtn'),duplicateBtn=$('duplicateBtn'),deleteBtn=$('deleteBtn');
+const searchToggle=$('searchToggle'),searchWrap=$('searchWrap'),searchInput=$('searchInput');
+const sortBtn=$('sortBtn'),userBadge=$('userBadge'),signOutTop=$('signOutTop');
+const folderModal=$('folderModal'),folderNameInput=$('folderNameInput');
+const folderModalTitle=$('folderModalTitle'),folderModalSub=$('folderModalSub');
+const folderModalConfirm=$('folderModalConfirm'),folderModalCancel=$('folderModalCancel');
+const moveModal=$('moveModal'),moveFolderList=$('moveFolderList');
+const moveModalConfirm=$('moveModalConfirm'),moveModalCancel=$('moveModalCancel');
+const lockModal=$('lockModal'),lockPasswordInput=$('lockPasswordInput');
+const lockPasswordConfirm=$('lockPasswordConfirm'),lockModalTitle=$('lockModalTitle');
+const lockModalConfirm=$('lockModalConfirm'),lockModalCancel=$('lockModalCancel');
+const unlockModal=$('unlockModal'),unlockPasswordInput=$('unlockPasswordInput');
+const unlockError=$('unlockError'),unlockModalConfirm=$('unlockModalConfirm'),unlockModalCancel=$('unlockModalCancel');
 
-authToggle.addEventListener('click',()=>{
-  isSignUp=!isSignUp;
-  authTitle.textContent=isSignUp?'Create Account':'Sign In';
+let newFolderParentId=null,moveTargetId=null,editFolderId=null;
+
+// ═══ AUTH ═══
+let isSignUp=false;
+function showAuthErr(m){authError.textContent=m;authError.classList.add('show')}
+function hideAuthErr(){authError.classList.remove('show')}
+
+authToggle.onclick=()=>{
+  isSignUp=!isSignUp;authTitle.textContent=isSignUp?'Create Account':'Sign In';
   authSub.textContent=isSignUp?'Create an account to save notes.':'Access your notes anywhere.';
-  authBtn.textContent=isSignUp?'Create Account':'Sign In';
-  authToggle.textContent=isSignUp?'Sign in':'Create one';
-  hideError();
-});
-
-document.getElementById('googleBtn').addEventListener('click',async()=>{
-  const provider=new firebase.auth.GoogleAuthProvider();
-  try{await auth.signInWithPopup(provider)}catch(e){showError(e.message.replace('Firebase: ','').replace(/\(.*\)/,'').trim())}
-});
-
-authBtn.addEventListener('click',async()=>{
-  const email=authEmail.value.trim(),pass=authPassword.value.trim();
-  if(!email||!pass)return showError('Fill in all fields.');
-  if(pass.length<6)return showError('Password must be at least 6 characters.');
-  hideError();authBtn.disabled=true;authBtn.textContent='Loading...';
+  authBtn.textContent=isSignUp?'Create Account':'Sign In';authToggle.textContent=isSignUp?'Sign in':'Create one';
+  hideAuthErr();
+};
+googleBtn.onclick=async()=>{
+  try{await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())}
+  catch(e){showAuthErr(e.message.replace('Firebase: ','').replace(/\(.*\)/,'').trim())}
+};
+authBtn.onclick=async()=>{
+  const e=authEmail.value.trim(),p=authPassword.value.trim();
+  if(!e||!p)return showAuthErr('Fill in all fields.');
+  if(p.length<6)return showAuthErr('Password must be 6+ characters.');
+  hideAuthErr();authBtn.disabled=true;authBtn.textContent='Loading...';
   try{
-    if(isSignUp) await auth.createUserWithEmailAndPassword(email,pass);
-    else await auth.signInWithEmailAndPassword(email,pass);
-  }catch(e){
-    showError(e.message.replace('Firebase: ','').replace(/\(.*\)/,'').trim());
-    authBtn.disabled=false;authBtn.textContent=isSignUp?'Create Account':'Sign In';
-  }
-});
+    isSignUp?await auth.createUserWithEmailAndPassword(e,p):await auth.signInWithEmailAndPassword(e,p);
+  }catch(x){showAuthErr(x.message.replace('Firebase: ','').replace(/\(.*\)/,'').trim());authBtn.disabled=false;authBtn.textContent=isSignUp?'Create Account':'Sign In'}
+};
 
-showAuthBtn.addEventListener('click',()=>{authScreen.classList.add('active');notesScreen.classList.remove('active');showAuthBtn.style.display='none'});
-signOutBtn.addEventListener('click',()=>auth.signOut());
+signOutTop.onclick=()=>auth.signOut();
 
-auth.onAuthStateChanged(user=>{
+auth.onAuthStateChanged(u=>{
   authBtn.disabled=false;authBtn.textContent=isSignUp?'Create Account':'Sign In';
-  if(user){
-    currentUser=user;authScreen.classList.remove('active');notesScreen.classList.add('active');
-    showAuthBtn.style.display='none';signOutBtn.style.display='';
-    userEmail.textContent=user.email;authEmail.value='';authPassword.value='';hideError();loadNotes();
+  if(u){
+    currentUser=u;authOverlay.style.display='none';app.classList.add('active');
+    userBadge.textContent=u.email.split('@')[0];authEmail.value='';authPassword.value='';hideAuthErr();
+    init();loadFolders();loadNotes();
   }else{
-    currentUser=null;unsubscribe&&unsubscribe();unsubscribe=null;
-    authScreen.classList.add('active');notesScreen.classList.remove('active');
-    showAuthBtn.style.display='';signOutBtn.style.display='none';
-    userEmail.textContent='';notesList.innerHTML='';emptyNotes.style.display='block';notesCount.textContent='';
+    currentUser=null;app.classList.remove('active');authOverlay.style.display='flex';
+    userBadge.textContent='';cleanup();viewing='all';viewTitle.textContent='All Notes';
   }
 });
 
-function loadNotes(){
-  if(!currentUser)return;
-  notesList.innerHTML='<div class="loading">Loading...</div>';emptyNotes.style.display='none';
-  unsubscribe=db.collection('notes').where('uid','==',currentUser.uid).orderBy('createdAt','desc')
+// ═══ INIT ═══
+function init(){
+  editorPanel.classList.remove('active');
+  if(quill){quill.container.innerHTML='';quill=null}
+}
+
+function cleanup(){
+  unsubscribeNotes&&unsubscribeNotes();unsubscribeFolders&&unsubscribeFolders();
+  unsubscribeNotes=unsubscribeFolders=null;folderArea.innerHTML='';notesGrid.innerHTML='';
+}
+
+// ═══ FOLDERS ═══
+function loadFolders(){
+  unsubscribeFolders&&unsubscribeFolders();
+  unsubscribeFolders=db.collection('folders').where('uid','==',currentUser.uid).orderBy('sortOrder')
     .onSnapshot(snap=>{
-      notesList.innerHTML='';
-      if(snap.empty){emptyNotes.style.display='block';notesCount.textContent='';return}
-      emptyNotes.style.display='none';
-      notesCount.textContent=`${snap.size} ${snap.size===1?'note':'notes'}`;
-      snap.forEach(doc=>{const d=doc.data();appendNote(doc.id,d.text,d.createdAt?.toDate()||new Date())});
-    },()=>{notesList.innerHTML='<div class="loading" style="color:#ef4444">Failed to load notes.</div>'});
+      folders=[];snap.forEach(d=>folders.push({id:d.id,...d.data()}));
+      renderFolders();renderMoveList();
+    });
 }
 
-function appendNote(id,text,date){
-  const div=document.createElement('div');div.className='note-card';div.dataset.id=id;
-  const lines=text.split('\n');
-  const title=lines[0].trim()||'Untitled';
-  const preview=lines.slice(1).join(' ').trim().slice(0,120)||lines[0].trim().slice(0,120);
-  const timeStr=date.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-  const charCount=text.length;
-  div.innerHTML=`
-    <div class="note-title">${escapeHtml(title)}</div>
-    ${preview?`<div class="note-preview">${escapeHtml(preview)}</div>`:''}
-    <div class="note-meta">${timeStr}</div>
-    <button class="delete-btn" onclick="event.stopPropagation();deleteNote('${id}')">✕</button>
-    <div class="char-count">${charCount} characters</div>`;
-  div.addEventListener('click',()=>openNote(id,text));
-  notesList.appendChild(div);
+function renderFolders(){
+  folderArea.innerHTML='';
+  const root=folders.filter(f=>!f.parentFolderId);
+  const subs=folders.filter(f=>f.parentFolderId);
+  root.forEach(f=>{
+    const el=document.createElement('div');el.className='folder-item'+(viewing===f.id?' active':'');
+    el.dataset.id=f.id;
+    const children=subs.filter(s=>s.parentFolderId===f.id);
+    const noteCount=notes.filter(n=>n.folderId===f.id&&!n.isDeleted).length;
+    el.innerHTML=`
+      <span class="icon">📁</span>
+      <span class="name">${esc(f.name)}</span>
+      <span class="count">${noteCount||''}</span>
+      <span class="folder-actions">
+        <button onclick="event.stopPropagation();addSubfolder('${f.id}')" title="Add subfolder">+</button>
+        <button onclick="event.stopPropagation();editFolder('${f.id}')" title="Rename">✎</button>
+        <button onclick="event.stopPropagation();deleteFolder('${f.id}')" title="Delete">✕</button>
+      </span>`;
+    el.onclick=()=>selectFolder(f.id);
+    folderArea.appendChild(el);
+    children.forEach(s=>{
+      const sel=document.createElement('div');sel.className='folder-item subfolder'+(viewing===s.id?' active':'');
+      sel.dataset.id=s.id;
+      const c2=notes.filter(n=>n.folderId===s.id&&!n.isDeleted).length;
+      sel.innerHTML=`
+        <span class="icon">📂</span>
+        <span class="name">${esc(s.name)}</span>
+        <span class="count">${c2||''}</span>
+        <span class="folder-actions">
+          <button onclick="event.stopPropagation();editFolder('${s.id}')" title="Rename">✎</button>
+          <button onclick="event.stopPropagation();deleteFolder('${s.id}')" title="Delete">✕</button>
+        </span>`;
+      sel.onclick=()=>selectFolder(s.id);
+      folderArea.appendChild(sel);
+    });
+  });
 }
 
-function escapeHtml(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
+function selectFolder(id){
+  viewing=id;const f=folders.find(x=>x.id===id);
+  viewTitle.textContent=f?esc(f.name):'All Notes';
+  document.querySelectorAll('.folder-item,.sidebar-item').forEach(e=>e.classList.remove('active'));
+  const el=document.querySelector(`.folder-item[data-id="${id}"]`);if(el)el.classList.add('active');
+  hideSidebar();loadNotes();
+}
 
-composeBtn.addEventListener('click',()=>{editingId=null;modalText.value='';modalOverlay.classList.add('active');setTimeout(()=>modalText.focus(),300)});
-modalCancel.addEventListener('click',closeModal);
-modalOverlay.addEventListener('click',e=>{if(e.target===modalOverlay)closeModal()});
-
-function closeModal(){modalOverlay.classList.remove('active');modalText.value='';editingId=null}
-
-modalSave.addEventListener('click',async()=>{
-  const text=modalText.value.trim();
-  if(!text||!currentUser)return;
-  modalSave.disabled=true;modalSave.textContent='Saving...';
-  try{
-    if(editingId){
-      await db.collection('notes').doc(editingId).update({text});
-    }else{
-      await db.collection('notes').add({uid:currentUser.uid,text,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-    }
-    closeModal();
-  }catch(e){showNotesError(e.message)}
-  modalSave.disabled=false;modalSave.textContent='Save';
+document.querySelectorAll('.sidebar-item[data-view]').forEach(el=>{
+  el.onclick=()=>{
+    viewing=el.dataset.view;
+    viewTitle.textContent=el.querySelector('.name').textContent;
+    document.querySelectorAll('.folder-item,.sidebar-item').forEach(e=>e.classList.remove('active'));
+    el.classList.add('active');hideSidebar();loadNotes();
+  };
 });
 
-function openNote(id,text){editingId=id;modalText.value=text;modalOverlay.classList.add('active');setTimeout(()=>modalText.focus(),300)}
-
-async function deleteNote(id){
-  if(!confirm('Delete this note?'))return;
-  try{await db.collection('notes').doc(id).delete()}catch(e){console.error(e)}
+// folder modals
+function showFolderModal(title,sub,val,parentId,editId){
+  folderModalTitle.textContent=title;folderModalSub.textContent=sub;
+  folderNameInput.value=val||'';newFolderParentId=parentId||null;editFolderId=editId||null;
+  folderModalConfirm.textContent=editId?'Rename':'Create';
+  folderModal.classList.add('active');setTimeout(()=>folderNameInput.focus(),200);
+}
+$('newFolderBtn').onclick=()=>showFolderModal('New Folder','Enter a name for your new folder.','',null,null);
+function addSubfolder(parentId){showFolderModal('New Subfolder','Enter a name for the subfolder.','',parentId,null)}
+function editFolder(id){const f=folders.find(x=>x.id===id);showFolderModal('Rename Folder','Enter a new name.',f.name,null,id)}
+folderModalCancel.onclick=()=>{folderModal.classList.remove('active');folderNameInput.value='';editFolderId=null};
+folderModalConfirm.onclick=async()=>{
+  const name=folderNameInput.value.trim();
+  if(!name)return;folderModalConfirm.disabled=true;
+  try{
+    if(editFolderId){await db.collection('folders').doc(editFolderId).update({name})}
+    else{await db.collection('folders').add({uid:currentUser.uid,name,parentFolderId:newFolderParentId,sortOrder:Date.now()})}
+    folderModal.classList.remove('active');folderNameInput.value='';editFolderId=null;newFolderParentId=null;
+  }catch(e){alert(e.message)}
+  folderModalConfirm.disabled=false;
+};
+async function deleteFolder(id){
+  const f=folders.find(x=>x.id===id);if(!f)return;
+  if(!confirm(`Delete folder "${f.name}"? Notes inside won't be deleted.`))return;
+  try{await db.collection('folders').doc(id).delete()}catch(e){alert(e.message)}
 }
 
-modalText.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.metaKey)modalSave.click()});
+// ═══ NOTES ═══
+function loadNotes(){
+  unsubscribeNotes&&unsubscribeNotes();
+  notesGrid.innerHTML='<div class="loading">Loading...</div>';
+  let query=db.collection('notes').where('uid','==',currentUser.uid);
+  query=query.orderBy('createdAt','desc');
+  unsubscribeNotes=query.onSnapshot(snap=>{
+    notes=[];snap.forEach(d=>notes.push({id:d.id,...d.data()}));
+    renderNotes();
+  },()=>{notesGrid.innerHTML='<div class="loading" style="color:#ef4444">Failed to load notes.</div>'});
+}
+
+function getVisibleNotes(){
+  let items=[...notes];
+  if(viewing==='trash')items=items.filter(n=>n.isDeleted);
+  else items=items.filter(n=>!n.isDeleted);
+  if(viewing==='pinned')items=items.filter(n=>n.isPinned);
+  else if(viewing!=='all'&&viewing!=='trash'){
+    const f=folders.find(x=>x.id===viewing);
+    const subIds=folders.filter(x=>x.parentFolderId===viewing).map(x=>x.id);
+    items=items.filter(n=>n.folderId===viewing||subIds.includes(n.folderId));
+  }
+  if(searchQuery){const q=searchQuery.toLowerCase();items=items.filter(n=>(n.title||'').toLowerCase().includes(q)||(n.content||'').toLowerCase().includes(q))}
+  if(sortBy==='oldest')items.sort((a,b)=>(a.createdAt?.toMillis()||0)-(b.createdAt?.toMillis()||0));
+  else if(sortBy==='title')items.sort((a,b)=>(a.title||'').localeCompare(b.title||''));
+  else items.sort((a,b)=>(b.createdAt?.toMillis()||0)-(a.createdAt?.toMillis()||0));
+  if(viewing!=='pinned'){const p=items.filter(n=>n.isPinned),up=items.filter(n=>!n.isPinned);items=[...p,...up]}
+  return items;
+}
+
+function renderNotes(){
+  const items=getVisibleNotes();notesGrid.innerHTML='';
+  if(!items.length){emptyState.style.display='block';notesCount.textContent='';return}
+  emptyState.style.display='none';
+  notesCount.textContent=`${items.length} ${items.length===1?'note':'notes'}`;
+  items.forEach(n=>{
+    const card=document.createElement('div');card.className='note-card'+(n.isPinned?' pinned':'');
+    const lines=(n.content||'').replace(/<[^>]+>/g,'').split('\n').filter(x=>x.trim());
+    const preview=lines.slice(0,2).join(' ').slice(0,120);
+    const timeStr=n.createdAt?.toDate().toLocaleDateString('en-US',{month:'short',day:'numeric'})||'';
+    const lockStr=n.isLocked?' 🔒':'';
+    card.innerHTML=`
+      <div class="card-actions">
+        <button onclick="event.stopPropagation();togglePin('${n.id}',${!!n.isPinned})" title="${n.isPinned?'Unpin':'Pin'}">📌</button>
+        <button onclick="event.stopPropagation();duplicateNote('${n.id}')" title="Duplicate">📋</button>
+        <button onclick="event.stopPropagation();moveNote('${n.id}')" title="Move">📂</button>
+        <button onclick="event.stopPropagation();deleteNote('${n.id}',${!!n.isDeleted})" title="${n.isDeleted?'Delete forever':'Trash'}">${n.isDeleted?'✕':'🗑️'}</button>
+      </div>
+      <div class="top-row">
+        <div class="note-title">${esc(n.title||'Untitled')}${lockStr}</div>
+      </div>
+      <div class="note-preview">${esc(preview)}</div>
+      <div class="note-meta">
+        <span class="note-date">${timeStr}</span>
+        ${n.isPinned?'<span class="pin-badge">📌 Pinned</span>':''}
+        ${n.isDeleted?'<span class="pin-badge" style="color:#ef4444">🗑️ Trashed</span>':''}
+      </div>`;
+    card.onclick=()=>openNote(n.id);notesGrid.appendChild(card);
+  });
+}
+
+// ═══ COMPOSE / EDIT ═══
+composeBtn.onclick=()=>{editingId=null;openEditor('','','',null)};
+
+function openNote(id){
+  const n=notes.find(x=>x.id===id);
+  if(!n)return;
+  if(n.isLocked&&unlockingId!==id){openUnlock(id);return}
+  unlockingId=null;
+  editingId=id;openEditor(n.id,n.title,n.content,n.folderId);
+}
+
+function openEditor(id,title,content,folderId){
+  editorPanel.classList.add('active');
+  noteTitleInput.value=title||'';
+  if(!quill){
+    const div=document.createElement('div');div.id='quillEditor';div.style.cssText='flex:1;display:flex;flex-direction:column';
+    document.getElementById('editorContainer').appendChild(div);
+    quill=new Quill('#quillEditor',{
+      theme:'snow',modules:{toolbar:[['bold','italic','underline','strike'],['blockquote','code-block'],[{list:'ordered'},{list:'bullet'},{list:'check'}],[{header:[1,2,3,false]}],['clean']]},
+      placeholder:'Start writing...'
+    });
+  }
+  quill.root.innerHTML=content||'';
+  pinToggle.classList.toggle('active',notes.find(n=>n.id===id)?.isPinned);
+  lockToggle.classList.toggle('active',notes.find(n=>n.id===id)?.isLocked);
+  setTimeout(()=>noteTitleInput.focus(),300);
+}
+
+editorBack.onclick=saveAndClose;
+function saveAndClose(){
+  const title=noteTitleInput.value.trim()||'Untitled';
+  const content=quill?quill.root.innerHTML:'';
+  if(content.replace(/<[^>]+>/g,'').trim()||title!=='Untitled'){
+    saveNote(title,content);
+  }else{closeEditor()}
+}
+async function saveNote(title,content){
+  if(!currentUser)return;
+  try{
+    if(editingId){await db.collection('notes').doc(editingId).update({title,content,updatedAt:firebase.firestore.FieldValue.serverTimestamp()})}
+    else{
+      const f=viewing!=='all'&&viewing!=='pinned'&&viewing!=='trash'?viewing:null;
+      await db.collection('notes').add({uid:currentUser.uid,title,content,folderId:f,isPinned:false,isLocked:false,isDeleted:false,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()})
+    }
+  }catch(e){alert('Failed to save: '+e.message)}
+  closeEditor();
+}
+function closeEditor(){
+  editorPanel.classList.remove('active');editingId=null;
+  if(quill){quill.root.innerHTML='';quill=null;document.getElementById('editorContainer').innerHTML=''}
+}
+
+// editor actions
+pinToggle.onclick=async()=>{
+  if(!editingId)return;
+  const n=notes.find(x=>x.id===editingId);if(!n)return;
+  try{await db.collection('notes').doc(editingId).update({isPinned:!n.isPinned});pinToggle.classList.toggle('active')}catch(e){}
+};
+lockToggle.onclick=()=>{
+  if(!editingId)return;
+  const n=notes.find(x=>x.id===editingId);
+  if(n?.isLocked){showLockModal('Unlock Note','Enter password to remove lock.','remove');return}
+  showLockModal('Lock Note','Set a password to lock this note.','set');
+};
+duplicateBtn.onclick=async()=>{
+  if(!editingId)return;
+  const n=notes.find(x=>x.id===editingId);if(!n)return;
+  try{
+    await db.collection('notes').add({uid:currentUser.uid,title:n.title+' (copy)',content:n.content,folderId:n.folderId,isPinned:false,isLocked:false,isDeleted:false,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()})
+  }catch(e){alert(e.message)}
+};
+deleteBtn.onclick=async()=>{
+  if(!editingId)return;
+  const n=notes.find(x=>x.id===editingId);if(!n)return;
+  if(n.isDeleted){
+    if(!confirm('Delete this note forever?'))return;
+    try{await db.collection('notes').doc(editingId).delete();closeEditor()}catch(e){}
+  }else{
+    try{await db.collection('notes').doc(editingId).update({isDeleted:true,deletedAt:firebase.firestore.FieldValue.serverTimestamp()});closeEditor()}catch(e){}
+  }
+};
+moveBtn.onclick=()=>{if(editingId)showMoveModal(editingId)};
+
+// ═══ TOGGLE PIN / DUPLICATE / DELETE (from cards) ═══
+async function togglePin(id,val){
+  try{await db.collection('notes').doc(id).update({isPinned:!val})}catch(e){}
+}
+async function duplicateNote(id){
+  const n=notes.find(x=>x.id===id);if(!n)return;
+  try{
+    await db.collection('notes').add({uid:currentUser.uid,title:n.title+' (copy)',content:n.content,folderId:n.folderId,isPinned:false,isLocked:false,isDeleted:false,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()})
+  }catch(e){alert(e.message)}
+}
+async function deleteNote(id,isDeleted){
+  if(isDeleted){
+    if(!confirm('Delete this note forever?'))return;
+    try{await db.collection('notes').doc(id).delete()}catch(e){}
+  }else{
+    try{await db.collection('notes').doc(id).update({isDeleted:true,deletedAt:firebase.firestore.FieldValue.serverTimestamp()})}catch(e){}
+  }
+  if(editingId===id)closeEditor();
+}
+
+// ═══ MOVE NOTE ═══
+function showMoveModal(id){
+  moveTargetId=id;moveModal.classList.add('active');renderMoveList();
+}
+function renderMoveList(){
+  moveFolderList.innerHTML='<div class="fl-item" data-id="__none" style="color:#666">No folder (root)</div>';
+  const root=folders.filter(f=>!f.parentFolderId);
+  const subs=folders.filter(f=>f.parentFolderId);
+  const current=notes.find(n=>n.id===moveTargetId)?.folderId;
+  root.forEach(f=>{
+    const d=document.createElement('div');d.className='fl-item'+(current===f.id?' active':'');d.dataset.id=f.id;
+    d.textContent='📁 '+f.name;d.onclick=()=>selectMove(f.id);moveFolderList.appendChild(d);
+    subs.filter(s=>s.parentFolderId===f.id).forEach(s=>{
+      const d2=document.createElement('div');d2.className='fl-item fl-sub'+(current===s.id?' active':'');d2.dataset.id=s.id;
+      d2.textContent='📂 '+s.name;d2.onclick=()=>selectMove(s.id);moveFolderList.appendChild(d2);
+    });
+  });
+  document.querySelector('.fl-item[data-id="__none"]').onclick=()=>selectMove(null);
+}
+let selectedMove=null;
+function selectMove(id){
+  selectedMove=id;
+  moveFolderList.querySelectorAll('.fl-item').forEach(e=>e.classList.toggle('active',e.dataset.id===String(id)));
+  moveModalConfirm.style.display='';
+}
+moveModalCancel.onclick=()=>{moveModal.classList.remove('active');selectedMove=null;moveTargetId=null};
+moveModalConfirm.onclick=async()=>{
+  if(!moveTargetId)return;
+  try{await db.collection('notes').doc(moveTargetId).update({folderId:selectedMove});moveModal.classList.remove('active');selectedMove=null}catch(e){alert(e.message)}
+};
+
+// ═══ LOCK ═══
+let lockAction='set';
+function showLockModal(title,sub,action){
+  lockAction=action;lockModalTitle.textContent=title;
+  document.querySelector('#lockModal .modal-sub').textContent=sub;
+  lockPasswordInput.value='';lockPasswordConfirm.value='';
+  lockPasswordConfirm.style.display=action==='set'?'':'none';
+  lockModal.classList.add('active');
+}
+lockModalCancel.onclick=()=>{lockModal.classList.remove('active');lockPasswordInput.value='';lockPasswordConfirm.value=''};
+lockModalConfirm.onclick=async()=>{
+  if(!editingId)return;
+  const p=lockPasswordInput.value.trim();
+  if(lockAction==='set'){
+    if(!p||p.length<4)return alert('Password must be 4+ characters.');
+    if(p!==lockPasswordConfirm.value.trim())return alert('Passwords do not match.');
+    const hash=btoa(p);await db.collection('notes').doc(editingId).update({isLocked:true,lockHash:hash});
+  }else{
+    const n=notes.find(x=>x.id===editingId);
+    if(!n||btoa(p)!==n.lockHash)return alert('Wrong password.');
+    await db.collection('notes').doc(editingId).update({isLocked:false,lockHash:firebase.firestore.FieldValue.delete()});
+  }
+  lockModal.classList.remove('active');lockPasswordInput.value='';lockPasswordConfirm.value='';
+  lockToggle.classList.toggle('active',lockAction==='set');
+};
+function openUnlock(id){
+  unlockPasswordInput.value='';unlockError.classList.remove('show');
+  unlockModal.classList.add('active');
+  const confirmUnlock=async()=>{
+    const n=notes.find(x=>x.id===id);
+    if(!n)return;
+    if(btoa(unlockPasswordInput.value.trim())!==n.lockHash){unlockError.textContent='Wrong password';unlockError.classList.add('show');return}
+    unlockModal.classList.remove('active');unlockingId=id;openNote(id);
+  };
+  unlockModalConfirm.onclick=confirmUnlock;
+  unlockPasswordInput.onkeydown=e=>{if(e.key==='Enter')confirmUnlock()};
+}
+unlockModalCancel.onclick=()=>{unlockModal.classList.remove('active');unlockPasswordInput.value=''};
+
+// ═══ SEARCH ═══
+searchToggle.onclick=()=>{const s=searchWrap.style.display;s==='none'?searchWrap.style.display='':searchWrap.style.display='none';if(searchWrap.style.display!=='none')searchInput.focus()};
+searchInput.oninput=()=>{searchQuery=searchInput.value.trim();renderNotes()};
+
+// ═══ SORT ═══
+sortBtn.onclick=()=>{
+  if(sortBy==='newest'){sortBy='oldest';sortBtn.textContent='Oldest ↓'}
+  else if(sortBy==='oldest'){sortBy='title';sortBtn.textContent='Title A-Z'}
+  else{sortBy='newest';sortBtn.textContent='Newest ↓'}
+  renderNotes();
+};
+
+// ═══ SIDEBAR ═══
+menuBtn.onclick=()=>{sidebar.classList.toggle('open');sidebarBackdrop.classList.toggle('show')};
+sidebarBackdrop.onclick=hideSidebar;
+function hideSidebar(){sidebar.classList.remove('open');sidebarBackdrop.classList.remove('show')}
+
+// ═══ UTILS ═══
+function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
+
+// keyboard shortcuts
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&editorPanel.classList.contains('active'))saveAndClose();
+  if(e.key==='Escape'&&folderModal.classList.contains('active'))folderModalCancel.onclick();
+  if(e.key==='Escape'&&moveModal.classList.contains('active'))moveModalCancel.onclick();
+  if(e.key==='Escape'&&lockModal.classList.contains('active'))lockModalCancel.onclick();
+  if(e.key==='Escape'&&unlockModal.classList.contains('active'))unlockModalCancel.onclick();
+  if(e.key==='n'&&(e.metaKey||e.ctrlKey)&&!editorPanel.classList.contains('active')){e.preventDefault();composeBtn.onclick()}
+  if(e.key==='Enter'&&e.metaKey&&editorPanel.classList.contains('active')){e.preventDefault();saveAndClose()}
+  if(e.key==='Enter'&&e.ctrlKey&&editorPanel.classList.contains('active')){e.preventDefault();saveAndClose()}
+});
 </script>
 </body>
 </html>
