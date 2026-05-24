@@ -134,6 +134,18 @@ svg{flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:ro
 #editorContainer .ql-toolbar button.ql-active{color:var(--accent)}
 #editorContainer .ql-toolbar .ql-picker{color:#888}
 #editorContainer .ql-toolbar .ql-picker:hover{color:#fff}
+#editorContainer .ql-toolbar .ql-picker-options{
+  background:#151515;border:1px solid var(--border);border-radius:12px;padding:4px;
+  box-shadow:0 12px 40px rgba(0,0,0,.5);
+}
+#editorContainer .ql-toolbar .ql-picker-item{
+  color:#999;padding:6px 12px;border-radius:8px;transition:all .15s;
+}
+#editorContainer .ql-toolbar .ql-picker-item:hover,
+#editorContainer .ql-toolbar .ql-picker-item.ql-selected{
+  background:rgba(255,255,255,.06);color:#fff;
+}
+#editorContainer .ql-toolbar .ql-formats button svg{width:16px;height:16px}
 #editorContainer .ql-container{flex:1;overflow-y:auto;font-size:.92rem;line-height:1.7;background:transparent}
 #editorContainer .ql-editor{padding:20px 24px;min-height:100%;color:#ddd}
 #editorContainer .ql-editor:focus{color:#fff}
@@ -182,8 +194,29 @@ svg{flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:ro
   .sidebar-backdrop{position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.5);display:none}
   .sidebar-backdrop.show{display:block}
   .topbar .menu-btn{display:flex}
+  .topbar{padding:8px 12px}
+  .topbar .top-actions button{width:36px;height:36px}
   .note-card .card-actions{opacity:1}
-  #editorContainer .ql-editor{padding:14px 16px}
+  .note-card .card-actions button{width:28px;height:28px}
+  .folder-item{padding:10px 12px}
+  .fab{width:50px;height:50px;bottom:18px;right:18px}
+  #editorContainer .ql-editor{padding:14px 16px;font-size:.88rem}
+  #editorContainer .ql-toolbar{padding:4px 8px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+  #editorContainer .ql-toolbar .ql-formats{margin-right:4px}
+  .modal-box{padding:20px;border-radius:16px}
+  .editor-topbar{padding:6px 8px}
+  .editor-topbar .title-input{font-size:.9rem}
+  .editor-topbar button{width:36px;height:36px}
+  .editor-topbar .editor-actions button{width:34px;height:34px}
+  .sidebar-list{padding-bottom:80px}
+  .notes-grid{padding:4px 8px 80px}
+  .note-card{padding:10px 12px}
+  .note-card .note-title{font-size:.84rem}
+  .note-card .note-preview{font-size:.74rem}
+  .main-header{padding:8px 16px 2px}
+  .search-wrap{padding:4px 8px 2px}
+  .auth-card{padding:28px 20px}
+  .fab svg{width:24px;height:24px}
 }
 </style>
 </head>
@@ -236,12 +269,12 @@ svg{flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:ro
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
   <div class="topbar">
-    <button class="menu-btn" id="menuBtn"><svg viewBox="0 0 24 24" width="20" height="20"><use href="#i-menu"/></svg></button>
+    <button class="menu-btn" id="menuBtn" title="Menu"><svg viewBox="0 0 24 24" width="20" height="20"><use href="#i-menu"/></svg></button>
     <h2 id="viewTitle">All Notes</h2>
     <div class="top-actions">
-      <button id="searchToggle"><svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-search"/></svg></button>
+      <button id="searchToggle" title="Search"><svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-search"/></svg></button>
       <span class="user-badge" id="userBadge"></span>
-      <button id="signOutTop"><svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-power"/></svg></button>
+      <button id="signOutTop" title="Sign Out"><svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-power"/></svg></button>
     </div>
   </div>
 
@@ -249,7 +282,7 @@ svg{flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:ro
     <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <span>Folders</span>
-        <button id="newFolderBtn"><svg viewBox="0 0 24 24" width="16" height="16"><use href="#i-plus"/></svg></button>
+        <button id="newFolderBtn" title="New Folder"><svg viewBox="0 0 24 24" width="16" height="16"><use href="#i-plus"/></svg></button>
       </div>
       <div class="sidebar-list" id="folderList">
         <div class="sidebar-item active" data-view="all">
@@ -277,7 +310,7 @@ svg{flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:ro
       </div>
       <div class="main-header">
         <span class="count" id="notesCount"></span>
-        <button id="sortBtn"><svg viewBox="0 0 24 24"><use href="#i-sort"/></svg> Newest</button>
+        <button id="sortBtn" title="Sort"><svg viewBox="0 0 24 24"><use href="#i-sort"/></svg> Newest</button>
       </div>
       <div class="notes-grid" id="notesGrid"></div>
       <div class="empty-state" id="emptyState" style="display:none">
@@ -287,20 +320,20 @@ svg{flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:ro
     </div>
   </div>
 
-  <button class="fab" id="composeBtn"><svg viewBox="0 0 24 24"><use href="#i-plus"/></svg></button>
+  <button class="fab" id="composeBtn" title="New Note"><svg viewBox="0 0 24 24"><use href="#i-plus"/></svg></button>
 </div>
 
 <!-- Editor -->
 <div class="editor-panel" id="editorPanel">
   <div class="editor-topbar">
-    <button id="editorBack"><svg viewBox="0 0 24 24"><use href="#i-arrow-left"/></svg></button>
+    <button id="editorBack" title="Back"><svg viewBox="0 0 24 24"><use href="#i-arrow-left"/></svg></button>
     <input class="title-input" id="noteTitleInput" placeholder="Note title...">
     <div class="editor-actions">
-      <button id="pinToggle"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg></button>
-      <button id="lockToggle"><svg viewBox="0 0 24 24"><use href="#i-lock"/></svg></button>
-      <button id="moveBtn"><svg viewBox="0 0 24 24"><use href="#i-move"/></svg></button>
-      <button id="duplicateBtn"><svg viewBox="0 0 24 24"><use href="#i-copy"/></svg></button>
-      <button id="deleteBtn"><svg viewBox="0 0 24 24"><use href="#i-trash"/></svg></button>
+      <button id="pinToggle" title="Pin / Unpin"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg></button>
+      <button id="lockToggle" title="Lock / Unlock"><svg viewBox="0 0 24 24"><use href="#i-lock"/></svg></button>
+      <button id="moveBtn" title="Move to Folder"><svg viewBox="0 0 24 24"><use href="#i-move"/></svg></button>
+      <button id="duplicateBtn" title="Duplicate"><svg viewBox="0 0 24 24"><use href="#i-copy"/></svg></button>
+      <button id="deleteBtn" title="Delete"><svg viewBox="0 0 24 24"><use href="#i-trash"/></svg></button>
     </div>
   </div>
   <div id="editorContainer"></div>
@@ -469,9 +502,9 @@ function renderFolders(){
       <span class="name">${esc(f.name)}</span>
       <span class="count">${nc||''}</span>
       <span class="folder-actions">
-        <button onclick="event.stopPropagation();addSubfolder('${f.id}')"><svg viewBox="0 0 24 24"><use href="#i-folder-plus"/></svg></button>
-        <button onclick="event.stopPropagation();editFolder('${f.id}')"><svg viewBox="0 0 24 24"><use href="#i-pencil"/></svg></button>
-        <button onclick="event.stopPropagation();deleteFolder('${f.id}')"><svg viewBox="0 0 24 24"><use href="#i-x"/></svg></button>
+        <button onclick="event.stopPropagation();addSubfolder('${f.id}')" title="Add Subfolder"><svg viewBox="0 0 24 24"><use href="#i-folder-plus"/></svg></button>
+        <button onclick="event.stopPropagation();editFolder('${f.id}')" title="Rename"><svg viewBox="0 0 24 24"><use href="#i-pencil"/></svg></button>
+        <button onclick="event.stopPropagation();deleteFolder('${f.id}')" title="Delete Folder"><svg viewBox="0 0 24 24"><use href="#i-x"/></svg></button>
       </span>`;
     el.onclick=()=>selectFolder(f.id);
     fa.appendChild(el);
@@ -484,8 +517,8 @@ function renderFolders(){
         <span class="name">${esc(s.name)}</span>
         <span class="count">${c2||''}</span>
         <span class="folder-actions">
-          <button onclick="event.stopPropagation();editFolder('${s.id}')"><svg viewBox="0 0 24 24"><use href="#i-pencil"/></svg></button>
-          <button onclick="event.stopPropagation();deleteFolder('${s.id}')"><svg viewBox="0 0 24 24"><use href="#i-x"/></svg></button>
+          <button onclick="event.stopPropagation();editFolder('${s.id}')" title="Rename"><svg viewBox="0 0 24 24"><use href="#i-pencil"/></svg></button>
+          <button onclick="event.stopPropagation();deleteFolder('${s.id}')" title="Delete Folder"><svg viewBox="0 0 24 24"><use href="#i-x"/></svg></button>
         </span>`;
       sel.onclick=()=>selectFolder(s.id);
       fa.appendChild(sel);
@@ -577,10 +610,10 @@ function renderNotes(){
     const lockStr=n.isLocked?' <svg viewBox="0 0 24 24" style="width:12px;height:12px;display:inline;vertical-align:middle;opacity:.4"><use href="#i-lock"/></svg>':'';
     card.innerHTML=`
       <div class="card-actions">
-        <button onclick="event.stopPropagation();togglePin('${n.id}',${!!n.isPinned})"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg></button>
-        <button onclick="event.stopPropagation();duplicateNote('${n.id}')"><svg viewBox="0 0 24 24"><use href="#i-copy"/></svg></button>
-        <button onclick="event.stopPropagation();moveNote('${n.id}')"><svg viewBox="0 0 24 24"><use href="#i-move"/></svg></button>
-        <button onclick="event.stopPropagation();deleteNote('${n.id}',${!!n.isDeleted})"><svg viewBox="0 0 24 24"><use href="#i-trash"/></svg></button>
+        <button onclick="event.stopPropagation();togglePin('${n.id}',${!!n.isPinned})" title="${n.isPinned?'Unpin':'Pin'}"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg></button>
+        <button onclick="event.stopPropagation();duplicateNote('${n.id}')" title="Duplicate"><svg viewBox="0 0 24 24"><use href="#i-copy"/></svg></button>
+        <button onclick="event.stopPropagation();moveNote('${n.id}')" title="Move"><svg viewBox="0 0 24 24"><use href="#i-move"/></svg></button>
+        <button onclick="event.stopPropagation();deleteNote('${n.id}',${!!n.isDeleted})" title="${n.isDeleted?'Delete Forever':'Trash'}"><svg viewBox="0 0 24 24"><use href="#i-trash"/></svg></button>
       </div>
       <div class="top-row"><div class="note-title">${esc(n.title||'Untitled')}${lockStr}</div></div>
       <div class="note-preview">${esc(preview)}</div>
