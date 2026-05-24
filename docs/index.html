@@ -15,251 +15,153 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--accent:#00d4ff;--accent2:#5b0fbe;--bg:#0a0a0a;--card:rgba(22,22,22,.92);--border:rgba(255,255,255,.06);--text:#f0f0f0;--muted:#666;--sidebar:240px}
 body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden;height:100dvh}
+svg{flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.icon{width:20px;height:20px;opacity:.65}
+
+/* toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);z-index:999;background:#1a1a1a;border:1px solid rgba(239,68,68,.2);border-radius:14px;padding:12px 18px;font-size:.78rem;color:#ef4444;max-width:90%;text-align:center;opacity:0;transition:all .4s cubic-bezier(.22,1,.36,1);pointer-events:none;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
 
 /* auth */
-.auth-overlay{
-  position:fixed;inset:0;z-index:999;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--bg);
-}
-.auth-card{
-  width:100%;max-width:380px;margin:16px;
-  background:var(--card);border:1px solid var(--border);border-radius:28px;padding:36px 24px;
-  box-shadow:0 32px 80px rgba(0,0,0,.7);
-}
+.auth-overlay{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:var(--bg)}
+.auth-card{width:100%;max-width:380px;margin:16px;background:var(--card);border:1px solid var(--border);border-radius:28px;padding:36px 24px;box-shadow:0 32px 80px rgba(0,0,0,.7)}
 .auth-card h2{font-size:1.4rem;font-weight:700;margin-bottom:4px}
 .auth-card .sub{font-size:.82rem;color:var(--muted);margin-bottom:22px}
-.auth-card input{
-  width:100%;padding:12px 16px;border-radius:14px;border:1px solid var(--border);
-  background:rgba(255,255,255,.04);color:#fff;font-size:.88rem;outline:none;
-  font-family:'Inter',sans-serif;margin-bottom:10px;transition:border-color .3s;
-}
+.auth-card input{width:100%;padding:12px 16px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:#fff;font-size:.88rem;outline:none;font-family:'Inter',sans-serif;margin-bottom:10px;transition:border-color .3s}
 .auth-card input:focus{border-color:var(--accent)}
 .auth-card input::placeholder{color:#444}
-.auth-card .btn{
-  width:100%;padding:12px;border-radius:14px;border:none;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
-  font-family:'Inter',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .3s;
-}
+.auth-card .btn{width:100%;padding:12px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:'Inter',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .3s}
 .auth-card .btn:hover{box-shadow:0 8px 30px rgba(0,212,255,.15)}
 .divider{display:flex;align-items:center;gap:12px;margin:14px 0;color:#444;font-size:.72rem}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.btn-google{
-  width:100%;padding:10px;border-radius:14px;border:1px solid var(--border);
-  background:rgba(255,255,255,.03);color:#aaa;font-family:'Inter',sans-serif;
-  font-size:.8rem;font-weight:500;cursor:pointer;transition:all .3s;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-}
+.btn-google{width:100%;padding:10px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:#aaa;font-family:'Inter',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:10px}
 .btn-google:hover{background:rgba(255,255,255,.06);color:#fff}
 .toggle{text-align:center;margin-top:14px;font-size:.78rem;color:var(--muted)}
 .toggle span{color:var(--accent);cursor:pointer}
 .auth-error{color:#ef4444;font-size:.78rem;margin-bottom:10px;display:none}
 .auth-error.show{display:block}
 
-/* app layout */
+/* app */
 .app{display:none;height:100dvh;flex-direction:column}
 .app.active{display:flex}
-.topbar{
-  display:flex;align-items:center;gap:12px;padding:10px 16px;
-  background:rgba(10,10,10,.92);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
-  border-bottom:1px solid var(--border);z-index:50;flex-shrink:0;
-}
-.topbar .menu-btn{
-  display:none;width:36px;height:36px;border-radius:10px;border:none;
-  background:rgba(255,255,255,.04);color:#888;font-size:1.1rem;cursor:pointer;
-  align-items:center;justify-content:center;flex-shrink:0;
-}
+.topbar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:rgba(10,10,10,.92);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border-bottom:1px solid var(--border);z-index:50;flex-shrink:0}
+.topbar .menu-btn{display:none;width:36px;height:36px;border-radius:10px;border:none;background:rgba(255,255,255,.04);color:#888;cursor:pointer;align-items:center;justify-content:center;flex-shrink:0}
 .topbar h2{font-size:1.1rem;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.topbar .top-actions{display:flex;gap:6px}
-.topbar .top-actions button{
-  width:32px;height:32px;border-radius:8px;border:1px solid var(--border);
-  background:rgba(255,255,255,.04);color:#888;cursor:pointer;font-size:.8rem;
-  transition:all .3s;display:flex;align-items:center;justify-content:center;
-}
+.topbar .top-actions{display:flex;align-items:center;gap:6px}
+.topbar .top-actions button{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:#888;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center}
 .topbar .top-actions button:hover{background:rgba(255,255,255,.08);color:#fff}
 .user-badge{font-size:.7rem;color:var(--muted);padding:4px 10px;border-radius:100px;border:1px solid var(--border);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 .body{display:flex;flex:1;overflow:hidden}
-.sidebar{
-  width:var(--sidebar);flex-shrink:0;background:rgba(14,14,14,.95);
-  border-right:1px solid var(--border);display:flex;flex-direction:column;
-  overflow:hidden;transition:transform .35s cubic-bezier(.22,1,.36,1);
-}
-.sidebar-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 16px 8px;font-size:.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;
-}
-.sidebar-header button{
-  width:28px;height:28px;border-radius:8px;border:none;
-  background:rgba(255,255,255,.04);color:#888;cursor:pointer;font-size:.85rem;
-  display:flex;align-items:center;justify-content:center;transition:all .3s;
-}
+.sidebar{width:var(--sidebar);flex-shrink:0;background:rgba(14,14,14,.95);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.sidebar-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px;font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.sidebar-header button{width:28px;height:28px;border-radius:8px;border:none;background:rgba(255,255,255,.04);color:#888;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
 .sidebar-header button:hover{background:rgba(255,255,255,.08);color:#fff}
 .sidebar-list{flex:1;overflow-y:auto;padding:4px 8px 60px}
 .sidebar-list::-webkit-scrollbar{width:3px}
 .sidebar-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:3px}
-.folder-item,.sidebar-item{
-  display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;
-  cursor:pointer;transition:all .2s;font-size:.82rem;color:#aaa;position:relative;
-  user-select:none;-webkit-user-select:none;
-}
+.folder-item,.sidebar-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;cursor:pointer;transition:all .2s;font-size:.82rem;color:#aaa;user-select:none;-webkit-user-select:none}
 .folder-item:hover,.sidebar-item:hover{background:rgba(255,255,255,.04);color:#fff}
 .folder-item.active,.sidebar-item.active{background:rgba(0,212,255,.08);color:var(--accent)}
-.folder-item .icon,.sidebar-item .icon{width:20px;text-align:center;flex-shrink:0;font-size:.75rem;opacity:.7}
 .folder-item .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.folder-item .count{font-size:.65rem;color:var(--muted)}
-.folder-item .folder-actions{
-  display:flex;gap:2px;opacity:0;transition:opacity .2s;margin-left:auto;
-}
+.folder-item .count{font-size:.62rem;color:var(--muted)}
+.folder-item .folder-actions{display:flex;gap:2px;opacity:0;transition:opacity .2s;margin-left:auto}
 .folder-item:hover .folder-actions{opacity:1}
-.folder-item .folder-actions button{
-  width:22px;height:22px;border-radius:6px;border:none;
-  background:transparent;color:#555;cursor:pointer;font-size:.55rem;transition:all .2s;
-  display:flex;align-items:center;justify-content:center;
-}
+.folder-item .folder-actions button{width:22px;height:22px;border-radius:6px;border:none;background:transparent;color:#555;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
 .folder-item .folder-actions button:hover{background:rgba(255,255,255,.06);color:#fff}
+.folder-item .folder-actions button svg{width:12px;height:12px}
 .subfolder{padding-left:28px;font-size:.78rem}
 
-/* main area */
+/* main */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 .main-header{padding:12px 20px 4px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.main-header .count{font-size:.72rem;color:var(--muted)}
-.main-header .sort-btn{font-size:.72rem;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+.main-header .count{font-size:.7rem;color:var(--muted)}
+.main-header button{font-size:.7rem;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:4px}
+.main-header button svg{width:14px;height:14px}
 
 .notes-grid{flex:1;overflow-y:auto;padding:4px 12px 100px}
 .notes-grid::-webkit-scrollbar{width:4px}
 .notes-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:4px}
-.note-card{
-  display:flex;flex-direction:column;
-  background:var(--card);border:1px solid var(--border);
-  border-radius:14px;padding:12px 14px;margin-bottom:6px;
-  cursor:pointer;transition:all .25s cubic-bezier(.22,1,.36,1);position:relative;
-}
+.note-card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:6px;cursor:pointer;transition:all .25s cubic-bezier(.22,1,.36,1);position:relative}
 .note-card:active{transform:scale(.98)}
 .note-card.pinned{border-left:2px solid var(--accent)}
 .note-card .top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 .note-card .note-title{font-size:.86rem;font-weight:600;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.note-card .note-preview{
-  font-size:.76rem;color:var(--muted);line-height:1.4;margin-top:2px;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-}
+.note-card .note-preview{font-size:.76rem;color:var(--muted);line-height:1.4;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .note-card .note-meta{display:flex;align-items:center;gap:8px;margin-top:6px}
-.note-card .note-date{font-size:.62rem;color:#333}
-.note-card .pin-badge{font-size:.55rem;color:var(--accent)}
-.note-card .locked-badge{font-size:.58rem;color:var(--muted)}
-.note-card .card-actions{
-  position:absolute;top:10px;right:10px;display:flex;gap:2px;opacity:0;transition:opacity .2s;
-}
+.note-card .note-date{font-size:.6rem;color:#333}
+.note-card .pin-badge{font-size:.52rem;color:var(--accent);display:flex;align-items:center;gap:3px}
+.note-card .pin-badge svg{width:10px;height:10px}
+.note-card .trash-badge{font-size:.52rem;color:#ef4444;display:flex;align-items:center;gap:3px}
+.note-card .trash-badge svg{width:10px;height:10px}
+.note-card .card-actions{position:absolute;top:10px;right:10px;display:flex;gap:2px;opacity:0;transition:opacity .2s}
 .note-card:hover .card-actions{opacity:1}
-.note-card .card-actions button{
-  width:24px;height:24px;border-radius:6px;border:none;background:transparent;
-  color:#444;cursor:pointer;font-size:.58rem;transition:all .2s;
-  display:flex;align-items:center;justify-content:center;
-}
+.note-card .card-actions button{width:24px;height:24px;border-radius:6px;border:none;background:transparent;color:#444;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
 .note-card .card-actions button:hover{background:rgba(255,255,255,.06);color:#fff}
+.note-card .card-actions button svg{width:13px;height:13px}
 .empty-state{text-align:center;padding:80px 20px}
-.empty-state .icon{font-size:2.6rem;margin-bottom:10px;opacity:.12}
 .empty-state h3{font-size:.95rem;color:#555;font-weight:600;margin-bottom:4px}
 .empty-state p{font-size:.78rem;color:#333}
 .loading{text-align:center;padding:30px;color:#444;font-size:.8rem}
 
+/* search */
+.search-wrap{padding:6px 12px 2px;flex-shrink:0}
+.search-wrap .search-inner{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:0 12px;transition:border-color .3s}
+.search-wrap .search-inner:focus-within{border-color:var(--accent)}
+.search-wrap .search-inner svg{width:16px;height:16px;color:#444;flex-shrink:0}
+.search-wrap input{flex:1;padding:8px 0;background:transparent;border:none;color:#fff;font-family:'Inter',sans-serif;font-size:.82rem;outline:none}
+.search-wrap input::placeholder{color:#333}
+
 /* editor */
-.editor-panel{
-  position:fixed;inset:0;z-index:200;
-  display:none;flex-direction:column;
-  background:var(--bg);
-}
+.editor-panel{position:fixed;inset:0;z-index:200;display:none;flex-direction:column;background:var(--bg)}
 .editor-panel.active{display:flex}
-.editor-topbar{
-  display:flex;align-items:center;gap:8px;padding:8px 12px;
-  background:rgba(10,10,10,.92);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
-  border-bottom:1px solid var(--border);flex-shrink:0;
-}
-.editor-topbar .back-btn{
-  width:34px;height:34px;border-radius:10px;border:none;
-  background:transparent;color:#888;font-size:1.1rem;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-}
-.editor-topbar .back-btn:hover{background:rgba(255,255,255,.06);color:#fff}
-.editor-topbar .title-input{
-  flex:1;background:transparent;border:none;color:#fff;
-  font-family:'Inter',sans-serif;font-size:.95rem;font-weight:600;padding:6px 0;outline:none;
-}
+.editor-topbar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(10,10,10,.92);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border-bottom:1px solid var(--border);flex-shrink:0}
+.editor-topbar button{width:34px;height:34px;border-radius:10px;border:none;background:transparent;color:#888;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.editor-topbar button:hover{background:rgba(255,255,255,.06);color:#fff}
+.editor-topbar button svg{width:18px;height:18px}
+.editor-topbar .title-input{flex:1;background:transparent;border:none;color:#fff;font-family:'Inter',sans-serif;font-size:.95rem;font-weight:600;padding:6px 0;outline:none;min-width:0}
 .editor-topbar .title-input::placeholder{color:#333}
-.editor-topbar .editor-actions{display:flex;gap:4px}
-.editor-topbar .editor-actions button{
-  width:32px;height:32px;border-radius:8px;border:1px solid transparent;
-  background:transparent;color:#888;cursor:pointer;font-size:.72rem;transition:all .2s;
-  display:flex;align-items:center;justify-content:center;
-}
+.editor-topbar .editor-actions{display:flex;gap:2px}
+.editor-topbar .editor-actions button{width:32px;height:32px;border-radius:8px;border:1px solid transparent;background:transparent;color:#888;transition:all .2s}
 .editor-topbar .editor-actions button:hover{background:rgba(255,255,255,.06);color:#fff;border-color:var(--border)}
-.editor-topbar .editor-actions .pin-btn.active{color:var(--accent)}
-.editor-topbar .editor-actions .lock-btn.active{color:var(--accent)}
+.editor-topbar .editor-actions button.active{color:var(--accent)}
+.editor-topbar .editor-actions button.active:hover{border-color:rgba(0,212,255,.2)}
 #editorContainer{flex:1;display:flex;flex-direction:column;overflow:hidden}
-#editorContainer .ql-toolbar{
-  background:rgba(14,14,14,.95);border:none;border-bottom:1px solid var(--border);
-  padding:6px 12px;flex-shrink:0;position:sticky;top:0;z-index:10;
-}
-#editorContainer .ql-toolbar .ql-formats{margin-right:8px}
+#editorContainer .ql-toolbar{background:rgba(14,14,14,.95);border:none;border-bottom:1px solid var(--border);padding:6px 12px;flex-shrink:0;position:sticky;top:0;z-index:10}
+#editorContainer .ql-toolbar .ql-formats{margin-right:6px}
 #editorContainer .ql-toolbar button{color:#888}
 #editorContainer .ql-toolbar button:hover{color:#fff}
 #editorContainer .ql-toolbar button.ql-active{color:var(--accent)}
 #editorContainer .ql-toolbar .ql-picker{color:#888}
 #editorContainer .ql-toolbar .ql-picker:hover{color:#fff}
-#editorContainer .ql-container{
-  flex:1;overflow-y:auto;font-size:.92rem;line-height:1.7;
-  background:transparent;
-}
+#editorContainer .ql-container{flex:1;overflow-y:auto;font-size:.92rem;line-height:1.7;background:transparent}
 #editorContainer .ql-editor{padding:20px 24px;min-height:100%;color:#ddd}
 #editorContainer .ql-editor:focus{color:#fff}
 #editorContainer .ql-editor.ql-blank::before{color:#333;font-style:normal}
 #editorContainer .ql-editor h1{font-size:1.6rem;font-weight:700;margin-bottom:8px}
 #editorContainer .ql-editor h2{font-size:1.2rem;font-weight:600;margin-bottom:6px}
+#editorContainer .ql-editor h3{font-size:1.05rem;font-weight:600;margin-bottom:4px}
 #editorContainer .ql-editor p{margin-bottom:6px}
-#editorContainer .ql-editor blockquote{
-  border-left:3px solid var(--accent);padding-left:16px;color:#888;margin:12px 0;
-}
-#editorContainer .ql-editor pre{
-  background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;
-  padding:12px;font-family:'SF Mono','Menlo','Monaco',monospace;font-size:.82rem;
-}
-#editorContainer .ql-editor ul li,.ql-editor ol li{margin-bottom:4px}
+#editorContainer .ql-editor blockquote{border-left:3px solid var(--accent);padding-left:16px;color:#888;margin:12px 0}
+#editorContainer .ql-editor pre{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:'SF Mono','Menlo','Monaco',monospace;font-size:.82rem}
 
-/* search bar */
-.search-wrap{padding:8px 12px 4px;flex-shrink:0}
-.search-wrap input{
-  width:100%;padding:8px 14px;border-radius:12px;border:1px solid var(--border);
-  background:rgba(255,255,255,.04);color:#fff;font-family:'Inter',sans-serif;
-  font-size:.82rem;outline:none;transition:border-color .3s;
-}
-.search-wrap input:focus{border-color:var(--accent)}
-.search-wrap input::placeholder{color:#333}
+/* fab */
+.fab{position:fixed;bottom:24px;right:24px;z-index:50;width:54px;height:54px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;cursor:pointer;box-shadow:0 8px 32px rgba(0,212,255,.25);transition:all .3s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;justify-content:center}
+.fab:hover{transform:scale(1.08);box-shadow:0 12px 40px rgba(0,212,255,.35)}
+.fab:active{transform:scale(.92)}
+.fab svg{width:26px;height:26px;stroke-width:2.5}
 
-/* modals */
-.modal-overlay{
-  position:fixed;inset:0;z-index:300;
-  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  display:none;align-items:center;justify-content:center;
-}
+/* modal */
+.modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center}
 .modal-overlay.active{display:flex}
-.modal-box{
-  width:90%;max-width:360px;background:var(--card);border:1px solid var(--border);
-  border-radius:20px;padding:24px;box-shadow:0 32px 80px rgba(0,0,0,.6);
-}
+.modal-box{width:90%;max-width:360px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;box-shadow:0 32px 80px rgba(0,0,0,.6)}
 .modal-box h3{font-size:1rem;font-weight:600;margin-bottom:4px}
 .modal-box .modal-sub{font-size:.78rem;color:var(--muted);margin-bottom:16px}
-.modal-box input,.modal-box select{
-  width:100%;padding:10px 14px;border-radius:12px;border:1px solid var(--border);
-  background:rgba(255,255,255,.04);color:#fff;font-family:'Inter',sans-serif;
-  font-size:.85rem;outline:none;margin-bottom:12px;
-}
+.modal-box input,.modal-box select{width:100%;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:#fff;font-family:'Inter',sans-serif;font-size:.85rem;outline:none;margin-bottom:12px}
 .modal-box input:focus{border-color:var(--accent)}
 .modal-box input::placeholder{color:#444}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
-.modal-actions button{
-  padding:8px 18px;border-radius:10px;border:none;font-family:'Inter',sans-serif;
-  font-size:.8rem;font-weight:500;cursor:pointer;transition:all .3s;
-}
+.modal-actions button{padding:8px 18px;border-radius:10px;border:none;font-family:'Inter',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;transition:all .3s}
 .modal-actions .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
 .modal-actions .btn-primary:hover{box-shadow:0 4px 20px rgba(0,212,255,.15)}
 .modal-actions .btn-secondary{background:rgba(255,255,255,.06);color:#888}
@@ -267,14 +169,11 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .modal-actions .btn-danger{background:rgba(239,68,68,.12);color:#ef4444}
 .modal-actions .btn-danger:hover{background:rgba(239,68,68,.2)}
 
-/* move modal folder list */
 .folder-list{max-height:200px;overflow-y:auto;margin-bottom:12px}
-.folder-list .fl-item{
-  padding:8px 12px;border-radius:8px;cursor:pointer;font-size:.82rem;color:#aaa;
-  transition:all .2s;
-}
+.folder-list .fl-item{padding:8px 12px;border-radius:8px;cursor:pointer;font-size:.82rem;color:#aaa;transition:all .2s;display:flex;align-items:center;gap:8px}
 .folder-list .fl-item:hover,.folder-list .fl-item.active{background:rgba(0,212,255,.06);color:var(--accent)}
-.folder-list .fl-sub{padding-left:24px}
+.folder-list .fl-item svg{width:16px;height:16px;opacity:.6}
+.folder-list .fl-sub{padding-left:28px}
 
 /* responsive */
 @media(max-width:768px){
@@ -283,13 +182,39 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
   .sidebar-backdrop{position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.5);display:none}
   .sidebar-backdrop.show{display:block}
   .topbar .menu-btn{display:flex}
-  .note-card{padding:10px 12px}
   .note-card .card-actions{opacity:1}
   #editorContainer .ql-editor{padding:14px 16px}
 }
 </style>
 </head>
 <body>
+
+<svg style="display:none">
+<defs>
+<g id="i-folder"><path d="M4 20V8a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></g>
+<g id="i-folder-plus"><path d="M4 20V8a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M12 12v4"/><path d="M10 14h4"/></g>
+<g id="i-plus"><path d="M12 5v14"/><path d="M5 12h14"/></g>
+<g id="i-pin"><path d="M12 2l-4 8v4h8v-4z"/><path d="M12 14v6"/></g>
+<g id="i-copy"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></g>
+<g id="i-move"><path d="M5 12h14"/><path d="M15 8l4 4-4 4"/></g>
+<g id="i-trash"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></g>
+<g id="i-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g>
+<g id="i-unlock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></g>
+<g id="i-search"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></g>
+<g id="i-menu"><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/></g>
+<g id="i-arrow-left"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></g>
+<g id="i-sort"><path d="M4 6h16"/><path d="M8 18h8"/><path d="M6 12h12"/></g>
+<g id="i-power"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><path d="M12 2v10"/></g>
+<g id="i-check"><path d="M20 6L9 17l-5-5"/></g>
+<g id="i-x"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></g>
+<g id="i-pencil"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></g>
+<g id="i-file"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></g>
+<g id="i-note"><path d="M12 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></g>
+</defs>
+</svg>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <!-- Auth -->
 <div class="auth-overlay" id="authOverlay">
@@ -311,42 +236,51 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
   <div class="topbar">
-    <button class="menu-btn" id="menuBtn">☰</button>
+    <button class="menu-btn" id="menuBtn"><svg viewBox="0 0 24 24" width="20" height="20"><use href="#i-menu"/></svg></button>
     <h2 id="viewTitle">All Notes</h2>
     <div class="top-actions">
-      <button id="searchToggle" title="Search">🔍</button>
+      <button id="searchToggle"><svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-search"/></svg></button>
       <span class="user-badge" id="userBadge"></span>
-      <button id="signOutTop" title="Sign out">⏻</button>
+      <button id="signOutTop"><svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-power"/></svg></button>
     </div>
   </div>
 
   <div class="body">
-    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        Folders
-        <button id="newFolderBtn" title="New Folder">+</button>
+        <span>Folders</span>
+        <button id="newFolderBtn"><svg viewBox="0 0 24 24" width="16" height="16"><use href="#i-plus"/></svg></button>
       </div>
       <div class="sidebar-list" id="folderList">
-        <div class="sidebar-item active" data-view="all"><span class="icon">📄</span><span class="name">All Notes</span></div>
-        <div class="sidebar-item" data-view="pinned"><span class="icon">📌</span><span class="name">Pinned</span></div>
+        <div class="sidebar-item active" data-view="all">
+          <svg viewBox="0 0 24 24" class="icon"><use href="#i-file"/></svg>
+          <span class="name">All Notes</span>
+        </div>
+        <div class="sidebar-item" data-view="pinned">
+          <svg viewBox="0 0 24 24" class="icon"><use href="#i-pin"/></svg>
+          <span class="name">Pinned</span>
+        </div>
         <div class="folder-area" id="folderArea"></div>
-        <div class="sidebar-item" data-view="trash"><span class="icon">🗑️</span><span class="name">Trash</span></div>
+        <div class="sidebar-item" data-view="trash">
+          <svg viewBox="0 0 24 24" class="icon"><use href="#i-trash"/></svg>
+          <span class="name">Trash</span>
+        </div>
       </div>
     </div>
 
-    <!-- Main -->
     <div class="main">
       <div class="search-wrap" id="searchWrap" style="display:none">
-        <input type="text" id="searchInput" placeholder="Search notes...">
+        <div class="search-inner">
+          <svg viewBox="0 0 24 24"><use href="#i-search"/></svg>
+          <input type="text" id="searchInput" placeholder="Search notes...">
+        </div>
       </div>
       <div class="main-header">
         <span class="count" id="notesCount"></span>
-        <button class="sort-btn" id="sortBtn">Newest ↓</button>
+        <button id="sortBtn"><svg viewBox="0 0 24 24"><use href="#i-sort"/></svg> Newest</button>
       </div>
       <div class="notes-grid" id="notesGrid">
         <div class="empty-state" id="emptyState">
-          <div class="icon">📝</div>
           <h3>No Notes Yet</h3>
           <p>Tap + to create your first note.</p>
         </div>
@@ -354,27 +288,26 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
     </div>
   </div>
 
-  <!-- Compose FAB -->
-  <button style="position:fixed;bottom:24px;right:24px;z-index:50;width:54px;height:54px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:1.8rem;font-weight:300;cursor:pointer;box-shadow:0 8px 32px rgba(0,212,255,.25);transition:all .3s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;justify-content:center" id="composeBtn" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">+</button>
+  <button class="fab" id="composeBtn"><svg viewBox="0 0 24 24"><use href="#i-plus"/></svg></button>
 </div>
 
-<!-- Editor Panel -->
+<!-- Editor -->
 <div class="editor-panel" id="editorPanel">
   <div class="editor-topbar">
-    <button class="back-btn" id="editorBack">←</button>
+    <button id="editorBack"><svg viewBox="0 0 24 24"><use href="#i-arrow-left"/></svg></button>
     <input class="title-input" id="noteTitleInput" placeholder="Note title...">
     <div class="editor-actions">
-      <button id="pinToggle" title="Pin">📌</button>
-      <button id="lockToggle" title="Lock">🔒</button>
-      <button id="moveBtn" title="Move to folder">📂</button>
-      <button id="duplicateBtn" title="Duplicate">📋</button>
-      <button id="deleteBtn" title="Delete">🗑️</button>
+      <button id="pinToggle"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg></button>
+      <button id="lockToggle"><svg viewBox="0 0 24 24"><use href="#i-lock"/></svg></button>
+      <button id="moveBtn"><svg viewBox="0 0 24 24"><use href="#i-move"/></svg></button>
+      <button id="duplicateBtn"><svg viewBox="0 0 24 24"><use href="#i-copy"/></svg></button>
+      <button id="deleteBtn"><svg viewBox="0 0 24 24"><use href="#i-trash"/></svg></button>
     </div>
   </div>
   <div id="editorContainer"></div>
 </div>
 
-<!-- New Folder Modal -->
+<!-- Folder Modal -->
 <div class="modal-overlay" id="folderModal">
   <div class="modal-box">
     <h3 id="folderModalTitle">New Folder</h3>
@@ -387,7 +320,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
   </div>
 </div>
 
-<!-- Move Note Modal -->
+<!-- Move Modal -->
 <div class="modal-overlay" id="moveModal">
   <div class="modal-box">
     <h3>Move Note</h3>
@@ -428,10 +361,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
   </div>
 </div>
 
-<footer style="display:none">Notes by AA Elements</footer>
-
 <script>
-// ═══ FIREBASE ═══
 const firebaseConfig = {
   apiKey: "AIzaSyDOZvxIIkUicNcewpG1vGUxiBfB1pkOv3w",
   authDomain: "notesapp-fab8a.firebaseapp.com",
@@ -444,94 +374,76 @@ firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
 const db=firebase.firestore();
 
-// ═══ STATE ═══
-let currentUser=null;
-let unsubscribeNotes=null;
-let unsubscribeFolders=null;
-let folders=[];
-let notes=[];
-let viewing='all'; // 'all'|'pinned'|'trash'|folderId
-let sortBy='newest'; // 'newest'|'oldest'|'title'
-let editingId=null;
-let quill=null;
-let unlockingId=null;
-let searchQuery='';
+let currentUser=null,unsubscribeNotes=null,unsubscribeFolders=null;
+let folders=[],notes=[];
+let viewing='all',sortBy='newest',searchQuery='';
+let editingId=null,quill=null,unlockingId=null;
+let newFolderParentId=null,moveTargetId=null,editFolderId=null,selectedMove=null;
 
-// ═══ DOM ═══
 const $=id=>document.getElementById(id);
-const authOverlay=$('authOverlay'),authTitle=$('authTitle'),authSub=$('authSub');
-const authEmail=$('authEmail'),authPassword=$('authPassword'),authBtn=$('authBtn');
-const authToggle=$('authToggle'),authError=$('authError'),googleBtn=$('googleBtn');
-const app=$('app'),viewTitle=$('viewTitle'),sidebar=$('sidebar');
-const folderList=$('folderList'),folderArea=$('folderArea');
-const notesGrid=$('notesGrid'),notesCount=$('notesCount'),emptyState=$('emptyState');
-const composeBtn=$('composeBtn'),menuBtn=$('menuBtn'),sidebarBackdrop=$('sidebarBackdrop');
-const editorPanel=$('editorPanel'),noteTitleInput=$('noteTitleInput');
-const editorBack=$('editorBack'),pinToggle=$('pinToggle'),lockToggle=$('lockToggle');
-const moveBtn=$('moveBtn'),duplicateBtn=$('duplicateBtn'),deleteBtn=$('deleteBtn');
-const searchToggle=$('searchToggle'),searchWrap=$('searchWrap'),searchInput=$('searchInput');
-const sortBtn=$('sortBtn'),userBadge=$('userBadge'),signOutTop=$('signOutTop');
-const folderModal=$('folderModal'),folderNameInput=$('folderNameInput');
-const folderModalTitle=$('folderModalTitle'),folderModalSub=$('folderModalSub');
-const folderModalConfirm=$('folderModalConfirm'),folderModalCancel=$('folderModalCancel');
-const moveModal=$('moveModal'),moveFolderList=$('moveFolderList');
-const moveModalConfirm=$('moveModalConfirm'),moveModalCancel=$('moveModalCancel');
-const lockModal=$('lockModal'),lockPasswordInput=$('lockPasswordInput');
-const lockPasswordConfirm=$('lockPasswordConfirm'),lockModalTitle=$('lockModalTitle');
-const lockModalConfirm=$('lockModalConfirm'),lockModalCancel=$('lockModalCancel');
-const unlockModal=$('unlockModal'),unlockPasswordInput=$('unlockPasswordInput');
-const unlockError=$('unlockError'),unlockModalConfirm=$('unlockModalConfirm'),unlockModalCancel=$('unlockModalCancel');
 
-let newFolderParentId=null,moveTargetId=null,editFolderId=null;
+// ═══ TOAST ═══
+let toastTimer=null;
+function toast(msg,type){
+  const el=$('toast');
+  el.textContent=msg;
+  el.style.borderColor=type==='error'?'rgba(239,68,68,.2)':type==='success'?'rgba(34,197,94,.2)':'rgba(255,255,255,.1)';
+  el.style.color=type==='error'?'#ef4444':type==='success'?'#22c55e':'#ccc';
+  el.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),4000);
+}
 
 // ═══ AUTH ═══
 let isSignUp=false;
-function showAuthErr(m){authError.textContent=m;authError.classList.add('show')}
-function hideAuthErr(){authError.classList.remove('show')}
+function showAuthErr(m){const e=$('authError');e.textContent=m;e.classList.add('show')}
+function hideAuthErr(){$('authError').classList.remove('show')}
 
-authToggle.onclick=()=>{
-  isSignUp=!isSignUp;authTitle.textContent=isSignUp?'Create Account':'Sign In';
-  authSub.textContent=isSignUp?'Create an account to save notes.':'Access your notes anywhere.';
-  authBtn.textContent=isSignUp?'Create Account':'Sign In';authToggle.textContent=isSignUp?'Sign in':'Create one';
+$('authToggle').onclick=()=>{
+  isSignUp=!isSignUp;
+  $('authTitle').textContent=isSignUp?'Create Account':'Sign In';
+  $('authSub').textContent=isSignUp?'Create an account to save notes.':'Access your notes anywhere.';
+  $('authBtn').textContent=isSignUp?'Create Account':'Sign In';
+  $('authToggle').textContent=isSignUp?'Sign in':'Create one';
   hideAuthErr();
 };
-googleBtn.onclick=async()=>{
+$('googleBtn').onclick=async()=>{
   try{await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())}
   catch(e){showAuthErr(e.message.replace('Firebase: ','').replace(/\(.*\)/,'').trim())}
 };
-authBtn.onclick=async()=>{
-  const e=authEmail.value.trim(),p=authPassword.value.trim();
+$('authBtn').onclick=async()=>{
+  const e=$('authEmail').value.trim(),p=$('authPassword').value.trim();
   if(!e||!p)return showAuthErr('Fill in all fields.');
   if(p.length<6)return showAuthErr('Password must be 6+ characters.');
-  hideAuthErr();authBtn.disabled=true;authBtn.textContent='Loading...';
+  hideAuthErr();$('authBtn').disabled=true;$('authBtn').textContent='Loading...';
   try{
     isSignUp?await auth.createUserWithEmailAndPassword(e,p):await auth.signInWithEmailAndPassword(e,p);
-  }catch(x){showAuthErr(x.message.replace('Firebase: ','').replace(/\(.*\)/,'').trim());authBtn.disabled=false;authBtn.textContent=isSignUp?'Create Account':'Sign In'}
+  }catch(x){
+    showAuthErr(x.message.replace('Firebase: ','').replace(/\(.*\)/,'').trim());
+    $('authBtn').disabled=false;$('authBtn').textContent=isSignUp?'Create Account':'Sign In';
+  }
 };
-
-signOutTop.onclick=()=>auth.signOut();
+$('signOutTop').onclick=()=>auth.signOut();
 
 auth.onAuthStateChanged(u=>{
-  authBtn.disabled=false;authBtn.textContent=isSignUp?'Create Account':'Sign In';
+  $('authBtn').disabled=false;$('authBtn').textContent=isSignUp?'Create Account':'Sign In';
   if(u){
-    currentUser=u;authOverlay.style.display='none';app.classList.add('active');
-    userBadge.textContent=u.email.split('@')[0];authEmail.value='';authPassword.value='';hideAuthErr();
-    init();loadFolders();loadNotes();
+    currentUser=u;$('authOverlay').style.display='none';$('app').classList.add('active');
+    $('userBadge').textContent=u.email.split('@')[0];
+    $('authEmail').value='';$('authPassword').value='';hideAuthErr();
+    initApp();loadFolders();loadNotes();
   }else{
-    currentUser=null;app.classList.remove('active');authOverlay.style.display='flex';
-    userBadge.textContent='';cleanup();viewing='all';viewTitle.textContent='All Notes';
+    currentUser=null;$('app').classList.remove('active');$('authOverlay').style.display='flex';
+    $('userBadge').textContent='';cleanup();viewing='all';
   }
 });
 
-// ═══ INIT ═══
-function init(){
-  editorPanel.classList.remove('active');
+function initApp(){
+  $('editorPanel').classList.remove('active');
   if(quill){quill.container.innerHTML='';quill=null}
 }
-
 function cleanup(){
   unsubscribeNotes&&unsubscribeNotes();unsubscribeFolders&&unsubscribeFolders();
-  unsubscribeNotes=unsubscribeFolders=null;folderArea.innerHTML='';notesGrid.innerHTML='';
+  unsubscribeNotes=unsubscribeFolders=null;
 }
 
 // ═══ FOLDERS ═══
@@ -541,50 +453,50 @@ function loadFolders(){
     .onSnapshot(snap=>{
       folders=[];snap.forEach(d=>folders.push({id:d.id,...d.data()}));
       renderFolders();renderMoveList();
-    });
+    },e=>toast('Folders failed to load: '+e.message,'error'));
 }
 
 function renderFolders(){
-  folderArea.innerHTML='';
+  const fa=$('folderArea');fa.innerHTML='';
   const root=folders.filter(f=>!f.parentFolderId);
   const subs=folders.filter(f=>f.parentFolderId);
   root.forEach(f=>{
     const el=document.createElement('div');el.className='folder-item'+(viewing===f.id?' active':'');
     el.dataset.id=f.id;
     const children=subs.filter(s=>s.parentFolderId===f.id);
-    const noteCount=notes.filter(n=>n.folderId===f.id&&!n.isDeleted).length;
+    const nc=notes.filter(n=>n.folderId===f.id&&!n.isDeleted).length;
     el.innerHTML=`
-      <span class="icon">📁</span>
+      <svg viewBox="0 0 24 24" class="icon"><use href="#i-folder"/></svg>
       <span class="name">${esc(f.name)}</span>
-      <span class="count">${noteCount||''}</span>
+      <span class="count">${nc||''}</span>
       <span class="folder-actions">
-        <button onclick="event.stopPropagation();addSubfolder('${f.id}')" title="Add subfolder">+</button>
-        <button onclick="event.stopPropagation();editFolder('${f.id}')" title="Rename">✎</button>
-        <button onclick="event.stopPropagation();deleteFolder('${f.id}')" title="Delete">✕</button>
+        <button onclick="event.stopPropagation();addSubfolder('${f.id}')"><svg viewBox="0 0 24 24"><use href="#i-folder-plus"/></svg></button>
+        <button onclick="event.stopPropagation();editFolder('${f.id}')"><svg viewBox="0 0 24 24"><use href="#i-pencil"/></svg></button>
+        <button onclick="event.stopPropagation();deleteFolder('${f.id}')"><svg viewBox="0 0 24 24"><use href="#i-x"/></svg></button>
       </span>`;
     el.onclick=()=>selectFolder(f.id);
-    folderArea.appendChild(el);
+    fa.appendChild(el);
     children.forEach(s=>{
       const sel=document.createElement('div');sel.className='folder-item subfolder'+(viewing===s.id?' active':'');
       sel.dataset.id=s.id;
       const c2=notes.filter(n=>n.folderId===s.id&&!n.isDeleted).length;
       sel.innerHTML=`
-        <span class="icon">📂</span>
+        <svg viewBox="0 0 24 24" class="icon"><use href="#i-folder"/></svg>
         <span class="name">${esc(s.name)}</span>
         <span class="count">${c2||''}</span>
         <span class="folder-actions">
-          <button onclick="event.stopPropagation();editFolder('${s.id}')" title="Rename">✎</button>
-          <button onclick="event.stopPropagation();deleteFolder('${s.id}')" title="Delete">✕</button>
+          <button onclick="event.stopPropagation();editFolder('${s.id}')"><svg viewBox="0 0 24 24"><use href="#i-pencil"/></svg></button>
+          <button onclick="event.stopPropagation();deleteFolder('${s.id}')"><svg viewBox="0 0 24 24"><use href="#i-x"/></svg></button>
         </span>`;
       sel.onclick=()=>selectFolder(s.id);
-      folderArea.appendChild(sel);
+      fa.appendChild(sel);
     });
   });
 }
 
 function selectFolder(id){
   viewing=id;const f=folders.find(x=>x.id===id);
-  viewTitle.textContent=f?esc(f.name):'All Notes';
+  $('viewTitle').textContent=f?esc(f.name):'All Notes';
   document.querySelectorAll('.folder-item,.sidebar-item').forEach(e=>e.classList.remove('active'));
   const el=document.querySelector(`.folder-item[data-id="${id}"]`);if(el)el.classList.add('active');
   hideSidebar();loadNotes();
@@ -593,49 +505,47 @@ function selectFolder(id){
 document.querySelectorAll('.sidebar-item[data-view]').forEach(el=>{
   el.onclick=()=>{
     viewing=el.dataset.view;
-    viewTitle.textContent=el.querySelector('.name').textContent;
+    $('viewTitle').textContent=el.querySelector('.name').textContent;
     document.querySelectorAll('.folder-item,.sidebar-item').forEach(e=>e.classList.remove('active'));
     el.classList.add('active');hideSidebar();loadNotes();
   };
 });
 
-// folder modals
 function showFolderModal(title,sub,val,parentId,editId){
-  folderModalTitle.textContent=title;folderModalSub.textContent=sub;
-  folderNameInput.value=val||'';newFolderParentId=parentId||null;editFolderId=editId||null;
-  folderModalConfirm.textContent=editId?'Rename':'Create';
-  folderModal.classList.add('active');setTimeout(()=>folderNameInput.focus(),200);
+  $('folderModalTitle').textContent=title;$('folderModalSub').textContent=sub;
+  $('folderNameInput').value=val||'';newFolderParentId=parentId||null;editFolderId=editId||null;
+  $('folderModalConfirm').textContent=editId?'Rename':'Create';
+  $('folderModal').classList.add('active');setTimeout(()=>$('folderNameInput').focus(),200);
 }
 $('newFolderBtn').onclick=()=>showFolderModal('New Folder','Enter a name for your new folder.','',null,null);
-function addSubfolder(parentId){showFolderModal('New Subfolder','Enter a name for the subfolder.','',parentId,null)}
-function editFolder(id){const f=folders.find(x=>x.id===id);showFolderModal('Rename Folder','Enter a new name.',f.name,null,id)}
-folderModalCancel.onclick=()=>{folderModal.classList.remove('active');folderNameInput.value='';editFolderId=null};
-folderModalConfirm.onclick=async()=>{
-  const name=folderNameInput.value.trim();
-  if(!name)return;folderModalConfirm.disabled=true;
+function addSubfolder(p){showFolderModal('New Subfolder','Enter a name for the subfolder.','',p,null)}
+function editFolder(id){const f=folders.find(x=>x.id===id);showFolderModal('Rename Folder','Enter a new name.',f?.name||'',null,id)}
+$('folderModalCancel').onclick=()=>{$('folderModal').classList.remove('active');$('folderNameInput').value='';editFolderId=null};
+$('folderModalConfirm').onclick=async()=>{
+  const n=$('folderNameInput').value.trim();if(!n)return;
+  $('folderModalConfirm').disabled=true;
   try{
-    if(editFolderId){await db.collection('folders').doc(editFolderId).update({name})}
-    else{await db.collection('folders').add({uid:currentUser.uid,name,parentFolderId:newFolderParentId,sortOrder:Date.now()})}
-    folderModal.classList.remove('active');folderNameInput.value='';editFolderId=null;newFolderParentId=null;
-  }catch(e){alert(e.message)}
-  folderModalConfirm.disabled=false;
+    if(editFolderId)await db.collection('folders').doc(editFolderId).update({name:n});
+    else await db.collection('folders').add({uid:currentUser.uid,name:n,parentFolderId:newFolderParentId,sortOrder:Date.now()});
+    $('folderModal').classList.remove('active');$('folderNameInput').value='';editFolderId=null;newFolderParentId=null;
+    toast('Folder created','success');
+  }catch(e){toast('Folder error: '+e.message,'error')}
+  $('folderModalConfirm').disabled=false;
 };
 async function deleteFolder(id){
-  const f=folders.find(x=>x.id===id);if(!f)return;
-  if(!confirm(`Delete folder "${f.name}"? Notes inside won't be deleted.`))return;
-  try{await db.collection('folders').doc(id).delete()}catch(e){alert(e.message)}
+  const f=folders.find(x=>x.id===id);if(!f||!confirm(`Delete folder "${f.name}"?`))return;
+  try{await db.collection('folders').doc(id).delete();toast('Folder deleted','success')}catch(e){toast(e.message,'error')}
 }
 
 // ═══ NOTES ═══
 function loadNotes(){
   unsubscribeNotes&&unsubscribeNotes();
-  notesGrid.innerHTML='<div class="loading">Loading...</div>';
-  let query=db.collection('notes').where('uid','==',currentUser.uid);
-  query=query.orderBy('createdAt','desc');
-  unsubscribeNotes=query.onSnapshot(snap=>{
-    notes=[];snap.forEach(d=>notes.push({id:d.id,...d.data()}));
-    renderNotes();
-  },()=>{notesGrid.innerHTML='<div class="loading" style="color:#ef4444">Failed to load notes.</div>'});
+  $('notesGrid').innerHTML='<div class="loading">Loading...</div>';
+  unsubscribeNotes=db.collection('notes').where('uid','==',currentUser.uid).orderBy('createdAt','desc')
+    .onSnapshot(snap=>{
+      notes=[];snap.forEach(d=>notes.push({id:d.id,...d.data()}));
+      renderNotes();renderFolders();
+    },e=>{$('notesGrid').innerHTML='<div class="loading" style="color:#ef4444">Error: '+esc(e.message)+'</div>';toast('Failed to load notes: '+e.message,'error')});
 }
 
 function getVisibleNotes(){
@@ -644,7 +554,6 @@ function getVisibleNotes(){
   else items=items.filter(n=>!n.isDeleted);
   if(viewing==='pinned')items=items.filter(n=>n.isPinned);
   else if(viewing!=='all'&&viewing!=='trash'){
-    const f=folders.find(x=>x.id===viewing);
     const subIds=folders.filter(x=>x.parentFolderId===viewing).map(x=>x.id);
     items=items.filter(n=>n.folderId===viewing||subIds.includes(n.folderId));
   }
@@ -657,239 +566,209 @@ function getVisibleNotes(){
 }
 
 function renderNotes(){
-  const items=getVisibleNotes();notesGrid.innerHTML='';
-  if(!items.length){emptyState.style.display='block';notesCount.textContent='';return}
-  emptyState.style.display='none';
-  notesCount.textContent=`${items.length} ${items.length===1?'note':'notes'}`;
+  const items=getVisibleNotes();const g=$('notesGrid');g.innerHTML='';
+  if(!items.length){$('emptyState').style.display='block';$('notesCount').textContent='';return}
+  $('emptyState').style.display='none';
+  $('notesCount').textContent=`${items.length} ${items.length===1?'note':'notes'}`;
   items.forEach(n=>{
     const card=document.createElement('div');card.className='note-card'+(n.isPinned?' pinned':'');
     const lines=(n.content||'').replace(/<[^>]+>/g,'').split('\n').filter(x=>x.trim());
     const preview=lines.slice(0,2).join(' ').slice(0,120);
-    const timeStr=n.createdAt?.toDate().toLocaleDateString('en-US',{month:'short',day:'numeric'})||'';
-    const lockStr=n.isLocked?' 🔒':'';
+    const ts=n.createdAt?.toDate().toLocaleDateString('en-US',{month:'short',day:'numeric'})||'';
+    const lockStr=n.isLocked?' <svg viewBox="0 0 24 24" style="width:12px;height:12px;display:inline;vertical-align:middle;opacity:.4"><use href="#i-lock"/></svg>':'';
     card.innerHTML=`
       <div class="card-actions">
-        <button onclick="event.stopPropagation();togglePin('${n.id}',${!!n.isPinned})" title="${n.isPinned?'Unpin':'Pin'}">📌</button>
-        <button onclick="event.stopPropagation();duplicateNote('${n.id}')" title="Duplicate">📋</button>
-        <button onclick="event.stopPropagation();moveNote('${n.id}')" title="Move">📂</button>
-        <button onclick="event.stopPropagation();deleteNote('${n.id}',${!!n.isDeleted})" title="${n.isDeleted?'Delete forever':'Trash'}">${n.isDeleted?'✕':'🗑️'}</button>
+        <button onclick="event.stopPropagation();togglePin('${n.id}',${!!n.isPinned})"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg></button>
+        <button onclick="event.stopPropagation();duplicateNote('${n.id}')"><svg viewBox="0 0 24 24"><use href="#i-copy"/></svg></button>
+        <button onclick="event.stopPropagation();moveNote('${n.id}')"><svg viewBox="0 0 24 24"><use href="#i-move"/></svg></button>
+        <button onclick="event.stopPropagation();deleteNote('${n.id}',${!!n.isDeleted})"><svg viewBox="0 0 24 24"><use href="#i-trash"/></svg></button>
       </div>
-      <div class="top-row">
-        <div class="note-title">${esc(n.title||'Untitled')}${lockStr}</div>
-      </div>
+      <div class="top-row"><div class="note-title">${esc(n.title||'Untitled')}${lockStr}</div></div>
       <div class="note-preview">${esc(preview)}</div>
       <div class="note-meta">
-        <span class="note-date">${timeStr}</span>
-        ${n.isPinned?'<span class="pin-badge">📌 Pinned</span>':''}
-        ${n.isDeleted?'<span class="pin-badge" style="color:#ef4444">🗑️ Trashed</span>':''}
+        <span class="note-date">${ts}</span>
+        ${n.isPinned?'<span class="pin-badge"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg>Pinned</span>':''}
+        ${n.isDeleted?'<span class="trash-badge"><svg viewBox="0 0 24 24"><use href="#i-trash"/></svg>Trashed</span>':''}
       </div>`;
-    card.onclick=()=>openNote(n.id);notesGrid.appendChild(card);
+    card.onclick=()=>openNote(n.id);g.appendChild(card);
   });
 }
 
 // ═══ COMPOSE / EDIT ═══
-composeBtn.onclick=()=>{editingId=null;openEditor('','','',null)};
+$('composeBtn').onclick=()=>{editingId=null;openEditor('','','',null)};
 
 function openNote(id){
-  const n=notes.find(x=>x.id===id);
-  if(!n)return;
+  const n=notes.find(x=>x.id===id);if(!n)return;
   if(n.isLocked&&unlockingId!==id){openUnlock(id);return}
-  unlockingId=null;
-  editingId=id;openEditor(n.id,n.title,n.content,n.folderId);
+  unlockingId=null;editingId=id;openEditor(n.id,n.title,n.content,n.folderId);
 }
 
-function openEditor(id,title,content,folderId){
-  editorPanel.classList.add('active');
-  noteTitleInput.value=title||'';
+function openEditor(id,title,content){
+  $('editorPanel').classList.add('active');
+  $('noteTitleInput').value=title||'';
   if(!quill){
-    const div=document.createElement('div');div.id='quillEditor';div.style.cssText='flex:1;display:flex;flex-direction:column';
-    document.getElementById('editorContainer').appendChild(div);
-    quill=new Quill('#quillEditor',{
-      theme:'snow',modules:{toolbar:[['bold','italic','underline','strike'],['blockquote','code-block'],[{list:'ordered'},{list:'bullet'},{list:'check'}],[{header:[1,2,3,false]}],['clean']]},
+    const d=document.createElement('div');d.id='qe';d.style.cssText='flex:1;display:flex;flex-direction:column';
+    $('editorContainer').appendChild(d);
+    quill=new Quill('#qe',{
+      theme:'snow',
+      modules:{toolbar:[['bold','italic','underline','strike'],['blockquote','code-block'],[{list:'ordered'},{list:'bullet'},{list:'check'}],[{header:[1,2,3,false]}],['clean']]},
       placeholder:'Start writing...'
     });
   }
   quill.root.innerHTML=content||'';
-  pinToggle.classList.toggle('active',notes.find(n=>n.id===id)?.isPinned);
-  lockToggle.classList.toggle('active',notes.find(n=>n.id===id)?.isLocked);
-  setTimeout(()=>noteTitleInput.focus(),300);
+  $('pinToggle').classList.toggle('active',notes.find(n=>n.id===id)?.isPinned);
+  $('lockToggle').classList.toggle('active',notes.find(n=>n.id===id)?.isLocked);
+  setTimeout(()=>$('noteTitleInput').focus(),300);
 }
 
-editorBack.onclick=saveAndClose;
+$('editorBack').onclick=saveAndClose;
 function saveAndClose(){
-  const title=noteTitleInput.value.trim()||'Untitled';
+  const title=$('noteTitleInput').value.trim()||'Untitled';
   const content=quill?quill.root.innerHTML:'';
-  if(content.replace(/<[^>]+>/g,'').trim()||title!=='Untitled'){
-    saveNote(title,content);
-  }else{closeEditor()}
+  if(content.replace(/<[^>]+>/g,'').trim()||title!=='Untitled')saveNote(title,content);
+  else closeEditor();
 }
 async function saveNote(title,content){
-  if(!currentUser)return;
   try{
-    if(editingId){await db.collection('notes').doc(editingId).update({title,content,updatedAt:firebase.firestore.FieldValue.serverTimestamp()})}
-    else{
+    if(editingId){
+      await db.collection('notes').doc(editingId).update({title,content,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+      toast('Note saved','success');
+    }else{
       const f=viewing!=='all'&&viewing!=='pinned'&&viewing!=='trash'?viewing:null;
-      await db.collection('notes').add({uid:currentUser.uid,title,content,folderId:f,isPinned:false,isLocked:false,isDeleted:false,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()})
+      await db.collection('notes').add({uid:currentUser.uid,title,content,folderId:f,isPinned:false,isLocked:false,isDeleted:false,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+      toast('Note created','success');
     }
-  }catch(e){alert('Failed to save: '+e.message)}
+  }catch(e){toast('Save error: '+e.message,'error')}
   closeEditor();
 }
 function closeEditor(){
-  editorPanel.classList.remove('active');editingId=null;
-  if(quill){quill.root.innerHTML='';quill=null;document.getElementById('editorContainer').innerHTML=''}
+  $('editorPanel').classList.remove('active');editingId=null;
+  if(quill){quill.root.innerHTML='';quill=null;$('editorContainer').innerHTML=''}
 }
 
-// editor actions
-pinToggle.onclick=async()=>{
-  if(!editingId)return;
-  const n=notes.find(x=>x.id===editingId);if(!n)return;
-  try{await db.collection('notes').doc(editingId).update({isPinned:!n.isPinned});pinToggle.classList.toggle('active')}catch(e){}
+// editor buttons
+$('pinToggle').onclick=async()=>{
+  if(!editingId)return;const n=notes.find(x=>x.id===editingId);if(!n)return;
+  try{await db.collection('notes').doc(editingId).update({isPinned:!n.isPinned});$('pinToggle').classList.toggle('active',!n.isPinned)}catch(e){toast(e.message,'error')}
 };
-lockToggle.onclick=()=>{
-  if(!editingId)return;
-  const n=notes.find(x=>x.id===editingId);
-  if(n?.isLocked){showLockModal('Unlock Note','Enter password to remove lock.','remove');return}
-  showLockModal('Lock Note','Set a password to lock this note.','set');
+$('lockToggle').onclick=()=>{
+  if(!editingId)return;const n=notes.find(x=>x.id===editingId);
+  if(n?.isLocked){showLockModal('Unlock Note','Enter password to remove lock.','remove')}else{showLockModal('Lock Note','Set a password to lock this note.','set')}
 };
-duplicateBtn.onclick=async()=>{
-  if(!editingId)return;
-  const n=notes.find(x=>x.id===editingId);if(!n)return;
-  try{
-    await db.collection('notes').add({uid:currentUser.uid,title:n.title+' (copy)',content:n.content,folderId:n.folderId,isPinned:false,isLocked:false,isDeleted:false,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()})
-  }catch(e){alert(e.message)}
+$('duplicateBtn').onclick=async()=>{
+  if(!editingId)return;const n=notes.find(x=>x.id===editingId);if(!n)return;
+  try{await db.collection('notes').add({uid:currentUser.uid,title:n.title+' (copy)',content:n.content,folderId:n.folderId,isPinned:false,isLocked:false,isDeleted:false,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});toast('Note duplicated','success')}catch(e){toast(e.message,'error')}
 };
-deleteBtn.onclick=async()=>{
-  if(!editingId)return;
-  const n=notes.find(x=>x.id===editingId);if(!n)return;
-  if(n.isDeleted){
-    if(!confirm('Delete this note forever?'))return;
-    try{await db.collection('notes').doc(editingId).delete();closeEditor()}catch(e){}
-  }else{
-    try{await db.collection('notes').doc(editingId).update({isDeleted:true,deletedAt:firebase.firestore.FieldValue.serverTimestamp()});closeEditor()}catch(e){}
-  }
+$('deleteBtn').onclick=async()=>{
+  if(!editingId)return;const n=notes.find(x=>x.id===editingId);if(!n)return;
+  if(n.isDeleted){if(!confirm('Delete forever?'))return;try{await db.collection('notes').doc(editingId).delete();closeEditor()}catch(e){}}
+  else{try{await db.collection('notes').doc(editingId).update({isDeleted:true,deletedAt:firebase.firestore.FieldValue.serverTimestamp()});closeEditor()}catch(e){}}
 };
-moveBtn.onclick=()=>{if(editingId)showMoveModal(editingId)};
+$('moveBtn').onclick=()=>{if(editingId)showMoveModal(editingId)};
 
-// ═══ TOGGLE PIN / DUPLICATE / DELETE (from cards) ═══
-async function togglePin(id,val){
-  try{await db.collection('notes').doc(id).update({isPinned:!val})}catch(e){}
-}
+async function togglePin(id,val){try{await db.collection('notes').doc(id).update({isPinned:!val})}catch(e){}}
 async function duplicateNote(id){
   const n=notes.find(x=>x.id===id);if(!n)return;
-  try{
-    await db.collection('notes').add({uid:currentUser.uid,title:n.title+' (copy)',content:n.content,folderId:n.folderId,isPinned:false,isLocked:false,isDeleted:false,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()})
-  }catch(e){alert(e.message)}
+  try{await db.collection('notes').add({uid:currentUser.uid,title:n.title+' (copy)',content:n.content,folderId:n.folderId,isPinned:false,isLocked:false,isDeleted:false,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});toast('Note duplicated','success')}catch(e){toast(e.message,'error')}
 }
 async function deleteNote(id,isDeleted){
-  if(isDeleted){
-    if(!confirm('Delete this note forever?'))return;
-    try{await db.collection('notes').doc(id).delete()}catch(e){}
-  }else{
-    try{await db.collection('notes').doc(id).update({isDeleted:true,deletedAt:firebase.firestore.FieldValue.serverTimestamp()})}catch(e){}
-  }
+  if(isDeleted){if(!confirm('Delete forever?'))return;try{await db.collection('notes').doc(id).delete()}catch(e){}}
+  else{try{await db.collection('notes').doc(id).update({isDeleted:true,deletedAt:firebase.firestore.FieldValue.serverTimestamp()})}catch(e){}}
   if(editingId===id)closeEditor();
 }
 
-// ═══ MOVE NOTE ═══
-function showMoveModal(id){
-  moveTargetId=id;moveModal.classList.add('active');renderMoveList();
-}
+// ═══ MOVE ═══
+function showMoveModal(id){moveTargetId=id;$('moveModal').classList.add('active');renderMoveList()}
 function renderMoveList(){
-  moveFolderList.innerHTML='<div class="fl-item" data-id="__none" style="color:#666">No folder (root)</div>';
-  const root=folders.filter(f=>!f.parentFolderId);
-  const subs=folders.filter(f=>f.parentFolderId);
+  const ml=$('moveFolderList');ml.innerHTML='<div class="fl-item" data-id="__none" style="color:#666"><svg viewBox="0 0 24 24"><use href="#i-file"/></svg> No folder (root)</div>';
+  const root=folders.filter(f=>!f.parentFolderId),subs=folders.filter(f=>f.parentFolderId);
   const current=notes.find(n=>n.id===moveTargetId)?.folderId;
   root.forEach(f=>{
     const d=document.createElement('div');d.className='fl-item'+(current===f.id?' active':'');d.dataset.id=f.id;
-    d.textContent='📁 '+f.name;d.onclick=()=>selectMove(f.id);moveFolderList.appendChild(d);
+    d.innerHTML='<svg viewBox="0 0 24 24"><use href="#i-folder"/></svg> '+esc(f.name);
+    d.onclick=()=>selectMove(f.id);ml.appendChild(d);
     subs.filter(s=>s.parentFolderId===f.id).forEach(s=>{
       const d2=document.createElement('div');d2.className='fl-item fl-sub'+(current===s.id?' active':'');d2.dataset.id=s.id;
-      d2.textContent='📂 '+s.name;d2.onclick=()=>selectMove(s.id);moveFolderList.appendChild(d2);
+      d2.innerHTML='<svg viewBox="0 0 24 24"><use href="#i-folder"/></svg> '+esc(s.name);
+      d2.onclick=()=>selectMove(s.id);ml.appendChild(d2);
     });
   });
   document.querySelector('.fl-item[data-id="__none"]').onclick=()=>selectMove(null);
 }
-let selectedMove=null;
-function selectMove(id){
-  selectedMove=id;
-  moveFolderList.querySelectorAll('.fl-item').forEach(e=>e.classList.toggle('active',e.dataset.id===String(id)));
-  moveModalConfirm.style.display='';
-}
-moveModalCancel.onclick=()=>{moveModal.classList.remove('active');selectedMove=null;moveTargetId=null};
-moveModalConfirm.onclick=async()=>{
+function selectMove(id){selectedMove=id;document.querySelectorAll('#moveFolderList .fl-item').forEach(e=>e.classList.toggle('active',e.dataset.id===String(id)));$('moveModalConfirm').style.display=''}
+$('moveModalCancel').onclick=()=>{$('moveModal').classList.remove('active');selectedMove=null;moveTargetId=null};
+$('moveModalConfirm').onclick=async()=>{
   if(!moveTargetId)return;
-  try{await db.collection('notes').doc(moveTargetId).update({folderId:selectedMove});moveModal.classList.remove('active');selectedMove=null}catch(e){alert(e.message)}
+  try{await db.collection('notes').doc(moveTargetId).update({folderId:selectedMove});$('moveModal').classList.remove('active');selectedMove=null;toast('Note moved','success')}catch(e){toast(e.message,'error')}
 };
 
 // ═══ LOCK ═══
 let lockAction='set';
 function showLockModal(title,sub,action){
-  lockAction=action;lockModalTitle.textContent=title;
+  lockAction=action;$('lockModalTitle').textContent=title;
   document.querySelector('#lockModal .modal-sub').textContent=sub;
-  lockPasswordInput.value='';lockPasswordConfirm.value='';
-  lockPasswordConfirm.style.display=action==='set'?'':'none';
-  lockModal.classList.add('active');
+  $('lockPasswordInput').value='';$('lockPasswordConfirm').value='';
+  $('lockPasswordConfirm').style.display=action==='set'?'':'none';
+  $('lockModal').classList.add('active');
 }
-lockModalCancel.onclick=()=>{lockModal.classList.remove('active');lockPasswordInput.value='';lockPasswordConfirm.value=''};
-lockModalConfirm.onclick=async()=>{
-  if(!editingId)return;
-  const p=lockPasswordInput.value.trim();
+$('lockModalCancel').onclick=()=>{$('lockModal').classList.remove('active')};
+$('lockModalConfirm').onclick=async()=>{
+  if(!editingId)return;const p=$('lockPasswordInput').value.trim();
   if(lockAction==='set'){
-    if(!p||p.length<4)return alert('Password must be 4+ characters.');
-    if(p!==lockPasswordConfirm.value.trim())return alert('Passwords do not match.');
-    const hash=btoa(p);await db.collection('notes').doc(editingId).update({isLocked:true,lockHash:hash});
+    if(!p||p.length<4)return toast('Password must be 4+ characters.','error');
+    if(p!==$('lockPasswordConfirm').value.trim())return toast('Passwords do not match.','error');
+    await db.collection('notes').doc(editingId).update({isLocked:true,lockHash:btoa(p)});
   }else{
     const n=notes.find(x=>x.id===editingId);
-    if(!n||btoa(p)!==n.lockHash)return alert('Wrong password.');
+    if(!n||btoa(p)!==n.lockHash)return toast('Wrong password.','error');
     await db.collection('notes').doc(editingId).update({isLocked:false,lockHash:firebase.firestore.FieldValue.delete()});
   }
-  lockModal.classList.remove('active');lockPasswordInput.value='';lockPasswordConfirm.value='';
-  lockToggle.classList.toggle('active',lockAction==='set');
+  $('lockModal').classList.remove('active');$('lockPasswordInput').value='';$('lockPasswordConfirm').value='';
+  $('lockToggle').classList.toggle('active',lockAction==='set');
+  toast(lockAction==='set'?'Note locked':'Note unlocked','success');
 };
 function openUnlock(id){
-  unlockPasswordInput.value='';unlockError.classList.remove('show');
-  unlockModal.classList.add('active');
-  const confirmUnlock=async()=>{
-    const n=notes.find(x=>x.id===id);
-    if(!n)return;
-    if(btoa(unlockPasswordInput.value.trim())!==n.lockHash){unlockError.textContent='Wrong password';unlockError.classList.add('show');return}
-    unlockModal.classList.remove('active');unlockingId=id;openNote(id);
+  $('unlockPasswordInput').value='';$('unlockError').classList.remove('show');$('unlockModal').classList.add('active');
+  const confirm=async()=>{
+    const n=notes.find(x=>x.id===id);if(!n)return;
+    if(btoa($('unlockPasswordInput').value.trim())!==n.lockHash){$('unlockError').textContent='Wrong password';$('unlockError').classList.add('show');return}
+    $('unlockModal').classList.remove('active');unlockingId=id;openNote(id);
   };
-  unlockModalConfirm.onclick=confirmUnlock;
-  unlockPasswordInput.onkeydown=e=>{if(e.key==='Enter')confirmUnlock()};
+  $('unlockModalConfirm').onclick=confirm;$('unlockPasswordInput').onkeydown=e=>{if(e.key==='Enter')confirm()};
 }
-unlockModalCancel.onclick=()=>{unlockModal.classList.remove('active');unlockPasswordInput.value=''};
+$('unlockModalCancel').onclick=()=>{$('unlockModal').classList.remove('active');$('unlockPasswordInput').value=''};
 
 // ═══ SEARCH ═══
-searchToggle.onclick=()=>{const s=searchWrap.style.display;s==='none'?searchWrap.style.display='':searchWrap.style.display='none';if(searchWrap.style.display!=='none')searchInput.focus()};
-searchInput.oninput=()=>{searchQuery=searchInput.value.trim();renderNotes()};
+$('searchToggle').onclick=()=>{
+  const w=$('searchWrap');w.style.display=w.style.display==='none'?'':'none';
+  if(w.style.display!=='none')$('searchInput').focus();
+};
+$('searchInput').oninput=()=>{searchQuery=$('searchInput').value.trim();renderNotes()};
 
 // ═══ SORT ═══
-sortBtn.onclick=()=>{
-  if(sortBy==='newest'){sortBy='oldest';sortBtn.textContent='Oldest ↓'}
-  else if(sortBy==='oldest'){sortBy='title';sortBtn.textContent='Title A-Z'}
-  else{sortBy='newest';sortBtn.textContent='Newest ↓'}
+$('sortBtn').onclick=()=>{
+  if(sortBy==='newest'){sortBy='oldest';$('sortBtn').innerHTML='<svg viewBox="0 0 24 24" width="14" height="14"><use href="#i-sort"/></svg> Oldest'}
+  else if(sortBy==='oldest'){sortBy='title';$('sortBtn').innerHTML='<svg viewBox="0 0 24 24" width="14" height="14"><use href="#i-sort"/></svg> Title'}
+  else{sortBy='newest';$('sortBtn').innerHTML='<svg viewBox="0 0 24 24" width="14" height="14"><use href="#i-sort"/></svg> Newest'}
   renderNotes();
 };
 
 // ═══ SIDEBAR ═══
-menuBtn.onclick=()=>{sidebar.classList.toggle('open');sidebarBackdrop.classList.toggle('show')};
-sidebarBackdrop.onclick=hideSidebar;
-function hideSidebar(){sidebar.classList.remove('open');sidebarBackdrop.classList.remove('show')}
+$('menuBtn').onclick=()=>{$('sidebar').classList.toggle('open');$('sidebarBackdrop').classList.toggle('show')};
+$('sidebarBackdrop').onclick=()=>{$('sidebar').classList.remove('open');$('sidebarBackdrop').classList.remove('show')};
+function hideSidebar(){$('sidebar').classList.remove('open');$('sidebarBackdrop').classList.remove('show')}
 
 // ═══ UTILS ═══
 function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
 
-// keyboard shortcuts
+// keyboard
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'&&editorPanel.classList.contains('active'))saveAndClose();
-  if(e.key==='Escape'&&folderModal.classList.contains('active'))folderModalCancel.onclick();
-  if(e.key==='Escape'&&moveModal.classList.contains('active'))moveModalCancel.onclick();
-  if(e.key==='Escape'&&lockModal.classList.contains('active'))lockModalCancel.onclick();
-  if(e.key==='Escape'&&unlockModal.classList.contains('active'))unlockModalCancel.onclick();
-  if(e.key==='n'&&(e.metaKey||e.ctrlKey)&&!editorPanel.classList.contains('active')){e.preventDefault();composeBtn.onclick()}
-  if(e.key==='Enter'&&e.metaKey&&editorPanel.classList.contains('active')){e.preventDefault();saveAndClose()}
-  if(e.key==='Enter'&&e.ctrlKey&&editorPanel.classList.contains('active')){e.preventDefault();saveAndClose()}
+  if(e.key==='Escape'&&$('editorPanel').classList.contains('active'))saveAndClose();
+  if(e.key==='Escape'&&$('folderModal').classList.contains('active'))$('folderModalCancel').onclick();
+  if(e.key==='Escape'&&$('lockModal').classList.contains('active'))$('lockModalCancel').onclick();
+  if(e.key==='Escape'&&$('unlockModal').classList.contains('active'))$('unlockModalCancel').onclick();
+  if((e.metaKey||e.ctrlKey)&&e.key==='n'&&!$('editorPanel').classList.contains('active')){e.preventDefault();$('composeBtn').onclick()}
+  if((e.metaKey||e.ctrlKey)&&e.key==='Enter'&&$('editorPanel').classList.contains('active')){e.preventDefault();saveAndClose()}
 });
 </script>
 </body>
