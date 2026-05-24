@@ -2,246 +2,259 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Notes — AA Elements</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
+:root{--accent:#00d4ff;--accent2:#5b0fbe;--bg:#0a0a0a;--card:rgba(22,22,22,.92);--border:rgba(255,255,255,.06);--text:#f0f0f0;--muted:#666}
 body{
-  font-family:'Inter',sans-serif;
-  background:#0e0e0e;color:#e8e8e8;
-  min-height:100vh;overflow-x:hidden;
+  font-family:'Inter',-apple-system,sans-serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;-webkit-font-smoothing:antialiased;
 }
-.ambient-grid{
-  position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
-  background-size:60px 60px;
-}
-.container{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:24px 16px}
 
 /* header */
 header{
+  position:sticky;top:0;z-index:50;
   display:flex;align-items:center;justify-content:space-between;
-  padding:14px 20px;margin-bottom:24px;
-  background:rgba(20,20,20,0.65);backdrop-filter:blur(32px) saturate(1.6);
-  -webkit-backdrop-filter:blur(32px) saturate(1.6);
-  border:1px solid rgba(255,255,255,.08);border-radius:100px;
-  box-shadow:0 8px 40px rgba(0,0,0,.5);
+  padding:14px 20px;margin-bottom:2px;
+  background:rgba(10,10,10,.88);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  border-bottom:1px solid var(--border);
 }
-header .logo{
-  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;
-  background:linear-gradient(135deg,#00d4ff,#5b0fbe);
+header h1{
+  font-size:1.5rem;font-weight:700;letter-spacing:-.03em;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-header .logo span{-webkit-text-fill-color:#888}
 .auth-area{display:flex;align-items:center;gap:10px}
-.auth-area .email{font-size:.75rem;color:#888}
+.auth-area .email{font-size:.72rem;color:var(--muted);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .auth-area button{
-  padding:6px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.1);
-  background:rgba(255,255,255,.04);color:#ccc;font-size:.75rem;cursor:pointer;
-  transition:all .3s;font-family:'Inter',sans-serif;
+  padding:5px 14px;border-radius:100px;border:1px solid var(--border);
+  background:rgba(255,255,255,.04);color:#aaa;font-size:.72rem;cursor:pointer;
+  transition:all .3s;font-family:'Inter',sans-serif;white-space:nowrap;
 }
 .auth-area button:hover{background:rgba(255,255,255,.08);color:#fff}
-.auth-area .btn-primary{
-  background:linear-gradient(135deg,#00d4ff,#5b0fbe);border:none;color:#fff;
-}
-.auth-area .btn-primary:hover{box-shadow:0 4px 20px rgba(0,212,255,.2);transform:scale(1.04)}
+.auth-area .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff}
 
-/* auth screens */
+/* screens */
 .screen{display:none}
-.screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh}
+.screen.active{display:block}
+
+/* auth */
+#authScreen.active{display:flex;align-items:center;justify-content:center;min-height:90vh}
 .auth-card{
-  width:100%;max-width:400px;
-  background:rgba(20,20,20,0.5);backdrop-filter:blur(20px) saturate(1.4);
-  -webkit-backdrop-filter:blur(20px) saturate(1.4);
-  border:1px solid rgba(255,255,255,.06);border-radius:24px;
-  padding:40px 28px;
-  box-shadow:0 24px 80px rgba(0,0,0,.6);
+  width:100%;max-width:380px;margin:0 16px;
+  background:var(--card);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border:1px solid var(--border);border-radius:28px;padding:36px 24px;
+  box-shadow:0 32px 80px rgba(0,0,0,.7);
 }
-.auth-card h2{
-  font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:6px;
-}
-.auth-card p{font-size:.85rem;color:#888;margin-bottom:24px}
+.auth-card h2{font-size:1.4rem;font-weight:700;margin-bottom:4px}
+.auth-card .sub{font-size:.82rem;color:var(--muted);margin-bottom:22px}
 .auth-card input{
-  width:100%;padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.04);color:#fff;font-size:.9rem;outline:none;
-  font-family:'Inter',sans-serif;margin-bottom:12px;transition:border-color .3s;
+  width:100%;padding:12px 16px;border-radius:14px;border:1px solid var(--border);
+  background:rgba(255,255,255,.04);color:#fff;font-size:.88rem;outline:none;
+  font-family:'Inter',sans-serif;margin-bottom:10px;transition:border-color .3s;
 }
-.auth-card input:focus{border-color:#00d4ff;box-shadow:0 0 20px rgba(0,212,255,.08)}
-.auth-card input::placeholder{color:#555}
+.auth-card input:focus{border-color:var(--accent);box-shadow:0 0 24px rgba(0,212,255,.06)}
+.auth-card input::placeholder{color:#444}
 .auth-card .btn{
-  width:100%;padding:12px;border-radius:12px;border:none;
-  background:linear-gradient(135deg,#00d4ff,#5b0fbe);color:#fff;
-  font-family:'Inter',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;
-  transition:all .3s;margin-top:4px;
+  width:100%;padding:12px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
+  font-family:'Inter',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;
+  transition:all .3s;margin-top:2px;
 }
-.auth-card .btn:hover{transform:scale(1.02);box-shadow:0 8px 30px rgba(0,212,255,.2)}
-.auth-card .toggle{
-  text-align:center;margin-top:16px;font-size:.82rem;color:#888;
-}
-.auth-card .toggle span{color:#00d4ff;cursor:pointer;transition:color .3s}
-.auth-card .toggle span:hover{color:#38bdf8}
-.auth-error{color:#ef4444;font-size:.8rem;margin-bottom:12px;display:none}
-.auth-error.show{display:block}
-.notes-error{color:#ef4444;font-size:.8rem;margin-bottom:12px;display:none;text-align:center}
-.notes-error.show{display:block}
-.divider{display:flex;align-items:center;gap:12px;margin:14px 0;color:#555;font-size:.75rem}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
+.auth-card .btn:hover{transform:scale(1.02);box-shadow:0 8px 30px rgba(0,212,255,.15)}
+.divider{display:flex;align-items:center;gap:12px;margin:14px 0;color:#444;font-size:.72rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
 .btn-google{
-  width:100%;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.1);
-  background:rgba(255,255,255,.04);color:#ccc;font-family:'Inter',sans-serif;
-  font-size:.82rem;font-weight:500;cursor:pointer;transition:all .3s;
+  width:100%;padding:10px;border-radius:14px;border:1px solid var(--border);
+  background:rgba(255,255,255,.03);color:#aaa;font-family:'Inter',sans-serif;
+  font-size:.8rem;font-weight:500;cursor:pointer;transition:all .3s;
   display:flex;align-items:center;justify-content:center;gap:10px;
 }
-.btn-google:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.15)}
+.btn-google:hover{background:rgba(255,255,255,.06);color:#fff}
+.toggle{text-align:center;margin-top:14px;font-size:.78rem;color:var(--muted)}
+.toggle span{color:var(--accent);cursor:pointer}
+.auth-error{color:#ef4444;font-size:.78rem;margin-bottom:10px;display:none}
+.auth-error.show{display:block}
+.notes-error{color:#ef4444;font-size:.78rem;padding:8px 16px;text-align:center;display:none}
+.notes-error.show{display:block}
 
-/* notes screen */
-.notes-header{display:flex;gap:10px;margin-bottom:20px}
-.notes-header input{
-  flex:1;padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.08);
-  background:rgba(20,20,20,0.5);backdrop-filter:blur(16px) saturate(1.4);
-  color:#fff;font-family:'Inter',sans-serif;font-size:.9rem;outline:none;
-  transition:border-color .3s;
-}
-.notes-header input:focus{border-color:#00d4ff}
-.notes-header input::placeholder{color:#555}
-.notes-header button{
-  width:48px;height:48px;border-radius:14px;border:none;
-  background:linear-gradient(135deg,#00d4ff,#5b0fbe);color:#fff;
-  font-size:1.4rem;cursor:pointer;transition:all .3s;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.notes-header button:hover{transform:scale(1.06);box-shadow:0 8px 30px rgba(0,212,255,.2)}
-
-/* note card */
+/* notes list */
+.notes-count{font-size:.72rem;color:var(--muted);padding:12px 20px 6px;font-weight:500}
+.notes-list{padding:0 12px 100px}
 .note-card{
-  background:rgba(20,20,20,0.4);backdrop-filter:blur(14px) saturate(1.3);
-  -webkit-backdrop-filter:blur(14px) saturate(1.3);
-  border:1px solid rgba(255,255,255,.05);border-radius:16px;
-  padding:18px 20px;margin-bottom:10px;
-  transition:all .3s cubic-bezier(.22,1,.36,1);
+  display:flex;flex-direction:column;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:14px 16px;margin-bottom:8px;
+  cursor:pointer;transition:all .35s cubic-bezier(.22,1,.36,1);
   position:relative;
 }
-.note-card:hover{border-color:rgba(255,255,255,.1);transform:translateY(-2px)}
-.note-card .note-text{
-  font-size:.9rem;line-height:1.6;color:#ddd;white-space:pre-wrap;word-break:break-word;
-  padding-right:60px;
+.note-card:active{transform:scale(.98)}
+.note-card .note-title{
+  font-size:.88rem;font-weight:600;color:#fff;margin-bottom:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:70px;
 }
-.note-card .note-time{font-size:.68rem;color:#555;margin-top:8px}
-.note-card .note-actions{position:absolute;top:16px;right:16px;display:flex;gap:6px}
-.note-card .note-actions button{
-  width:28px;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,.06);
-  background:rgba(255,255,255,.04);color:#666;cursor:pointer;font-size:.75rem;
+.note-card .note-preview{
+  font-size:.78rem;color:var(--muted);line-height:1.4;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  padding-right:70px;
+}
+.note-card .note-meta{
+  position:absolute;top:14px;right:16px;
+  font-size:.65rem;color:#444;font-weight:500;
+}
+.note-card .delete-btn{
+  position:absolute;bottom:14px;right:16px;
+  width:24px;height:24px;border-radius:8px;border:1px solid transparent;
+  background:transparent;color:#333;cursor:pointer;font-size:.6rem;
   transition:all .3s;display:flex;align-items:center;justify-content:center;
 }
-.note-card .note-actions .delete:hover{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.2);color:#ef4444}
-.note-card .note-actions .edit:hover{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.2);color:#00d4ff}
-.note-card.editing{border-color:#00d4ff;box-shadow:0 0 30px rgba(0,212,255,.08)}
-.note-card textarea{
-  width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
-  border-radius:10px;padding:12px;color:#fff;font-family:'Inter',sans-serif;
-  font-size:.9rem;outline:none;resize:vertical;min-height:80px;transition:border-color .3s;
+.note-card:hover .delete-btn{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.12);color:#ef4444}
+.note-card .char-count{
+  font-size:.6rem;color:#333;margin-top:4px;
 }
-.note-card textarea:focus{border-color:#00d4ff}
-.edit-actions{display:flex;gap:8px;margin-top:10px}
-.edit-actions button{
-  padding:6px 18px;border-radius:10px;border:none;cursor:pointer;
-  font-family:'Inter',sans-serif;font-size:.78rem;font-weight:500;transition:all .3s;
-}
-.edit-actions .save{background:linear-gradient(135deg,#00d4ff,#5b0fbe);color:#fff}
-.edit-actions .save:hover{box-shadow:0 4px 20px rgba(0,212,255,.2)}
-.edit-actions .cancel{background:rgba(255,255,255,.06);color:#888}
-.edit-actions .cancel:hover{background:rgba(255,255,255,.1)}
 
-/* empty state */
-.empty-notes{text-align:center;padding:60px 20px;color:#555}
-.empty-notes .icon{font-size:3rem;margin-bottom:12px;opacity:.3}
-.empty-notes h3{font-size:1rem;color:#888;margin-bottom:6px;font-weight:600}
-.empty-notes p{font-size:.82rem}
+/* compose button */
+.compose-btn{
+  position:fixed;bottom:28px;right:28px;z-index:60;
+  width:56px;height:56px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
+  font-size:1.8rem;font-weight:300;cursor:pointer;
+  box-shadow:0 8px 32px rgba(0,212,255,.25);
+  transition:all .3s cubic-bezier(.22,1,.36,1);
+  display:flex;align-items:center;justify-content:center;
+}
+.compose-btn:hover{transform:scale(1.08);box-shadow:0 12px 40px rgba(0,212,255,.35)}
+.compose-btn:active{transform:scale(.92)}
+
+/* empty */
+.empty-notes{text-align:center;padding:80px 20px}
+.empty-notes .icon{font-size:3rem;margin-bottom:12px;opacity:.15}
+.empty-notes h3{font-size:1rem;color:#555;font-weight:600;margin-bottom:4px}
+.empty-notes p{font-size:.8rem;color:#333}
 
 /* loading */
-.loading-dots{display:inline-flex;gap:4px;padding:20px 0}
-.loading-dots span{width:6px;height:6px;border-radius:50%;background:#00d4ff;animation:dotPulse 1.2s infinite}
-.loading-dots span:nth-child(2){animation-delay:.2s}
-.loading-dots span:nth-child(3){animation-delay:.4s}
-@keyframes dotPulse{0%,100%{opacity:.2}50%{opacity:1}}
+.loading{text-align:center;padding:40px 0;color:#444;font-size:.8rem}
 
-/* sign out button in notes */
-.sign-out-btn{
-  padding:6px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.1);
-  background:rgba(255,255,255,.04);color:#ccc;font-size:.75rem;cursor:pointer;
-  transition:all .3s;font-family:'Inter',sans-serif;
+/* modal */
+.modal-overlay{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:none;align-items:flex-end;justify-content:center;
+  animation:fadeIn .3s ease;
 }
-.sign-out-btn:hover{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.2);color:#ef4444}
+.modal-overlay.active{display:flex}
+.modal-overlay.active .modal-sheet{animation:slideUp .4s cubic-bezier(.22,1,.36,1)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+.modal-sheet{
+  width:100%;max-width:520px;max-height:92vh;
+  background:var(--card);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  border-radius:24px 24px 0 0;padding:20px 20px 32px;
+  box-shadow:0 -8px 60px rgba(0,0,0,.6);
+  display:flex;flex-direction:column;
+  position:relative;
+}
+.modal-handle{
+  width:36px;height:4px;border-radius:4px;background:rgba(255,255,255,.1);
+  margin:0 auto 16px;
+}
+.modal-sheet .modal-header{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;
+}
+.modal-sheet .modal-header button{
+  padding:6px 16px;border-radius:100px;border:none;
+  font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .3s;
+}
+.modal-sheet .modal-header .cancel-btn{background:rgba(255,255,255,.06);color:#888}
+.modal-sheet .modal-header .cancel-btn:hover{background:rgba(255,255,255,.1)}
+.modal-sheet .modal-header .save-btn{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
+  padding:6px 20px;
+}
+.modal-sheet .modal-header .save-btn:hover{box-shadow:0 4px 20px rgba(0,212,255,.2)}
+.modal-sheet textarea{
+  width:100%;flex:1;min-height:200px;max-height:65vh;
+  background:transparent;border:none;color:#fff;
+  font-family:'Inter',sans-serif;font-size:.95rem;line-height:1.7;
+  outline:none;resize:none;padding:4px 0;
+}
+.modal-sheet textarea::placeholder{color:#333}
+
+/* sign out */
+.sign-out-btn:hover{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.15);color:#ef4444}
 
 /* responsive */
 @media(max-width:480px){
-  .container{padding:16px 12px}
-  .auth-card{padding:28px 20px}
-  .notes-header input{font-size:.85rem;padding:10px 14px}
-  .notes-header button{width:44px;height:44px;font-size:1.2rem}
-  .note-card{padding:14px 16px}
-  .note-card .note-text{font-size:.85rem;padding-right:50px}
   header{padding:12px 16px}
+  header h1{font-size:1.3rem}
+  .compose-btn{width:52px;height:52px;font-size:1.6rem;bottom:20px;right:20px}
+  .note-card{padding:12px 14px}
+  .modal-sheet{padding:16px 16px 28px;border-radius:20px 20px 0 0}
 }
 </style>
 </head>
 <body>
 
-<div class="ambient-grid"></div>
-
-<div class="container">
-  <header>
-    <div class="logo">Notes<span>.</span></div>
-    <div class="auth-area" id="authArea">
-      <span class="email" id="userEmail"></span>
-      <button class="btn-primary" id="showAuthBtn" style="display:none">Sign In</button>
-      <button class="sign-out-btn" id="signOutBtn" style="display:none">Sign Out</button>
-    </div>
-  </header>
-
-  <!-- Auth Screen -->
-  <div class="screen active" id="authScreen">
-    <div class="auth-card">
-      <h2 id="authTitle">Sign In</h2>
-      <p id="authSub">Access your notes from anywhere.</p>
-      <div class="auth-error" id="authError"></div>
-      <input type="email" id="authEmail" placeholder="Email">
-      <input type="password" id="authPassword" placeholder="Password">
-      <button class="btn" id="authBtn">Sign In</button>
-      <div class="divider"><span>or</span></div>
-      <button class="btn-google" id="googleBtn"><svg viewBox="0 0 48 48" width="18" height="18"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.54 28.59A14.5 14.5 0 0 1 9.5 24c0-1.59.28-3.14.76-4.59l-7.98-6.19A23.99 23.99 0 0 0 0 24c0 3.77.87 7.35 2.56 10.56l7.98-5.97z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 5.97C6.51 42.62 14.62 48 24 48z"/></svg> Continue with Google</button>
-      <div class="toggle">
-        Don't have an account? <span id="authToggle">Create one</span>
-      </div>
-    </div>
+<header>
+  <h1>Notes</h1>
+  <div class="auth-area">
+    <span class="email" id="userEmail"></span>
+    <button class="btn-primary" id="showAuthBtn" style="display:none">Sign In</button>
+    <button class="sign-out-btn" id="signOutBtn" style="display:none">Sign Out</button>
   </div>
+</header>
 
-  <!-- Notes Screen -->
-  <div class="screen" id="notesScreen">
-    <div class="notes-header">
-      <input type="text" id="noteInput" placeholder="Write a note...">
-      <button id="addNoteBtn">+</button>
-    </div>
-    <div class="notes-error" id="notesError"></div>
-    <div id="notesList"></div>
-    <div class="empty-notes" id="emptyNotes">
-      <div class="icon">📝</div>
-      <h3>No notes yet</h3>
-      <p>Write your first note above.</p>
-    </div>
+<!-- Auth -->
+<div class="screen active" id="authScreen">
+  <div class="auth-card">
+    <h2 id="authTitle">Sign In</h2>
+    <p class="sub" id="authSub">Access your notes anywhere.</p>
+    <div class="auth-error" id="authError"></div>
+    <input type="email" id="authEmail" placeholder="Email">
+    <input type="password" id="authPassword" placeholder="Password">
+    <button class="btn" id="authBtn">Sign In</button>
+    <div class="divider"><span>or</span></div>
+    <button class="btn-google" id="googleBtn"><svg viewBox="0 0 48 48" width="18" height="18"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.54 28.59A14.5 14.5 0 0 1 9.5 24c0-1.59.28-3.14.76-4.59l-7.98-6.19A23.99 23.99 0 0 0 0 24c0 3.77.87 7.35 2.56 10.56l7.98-5.97z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 5.97C6.51 42.62 14.62 48 24 48z"/></svg> Continue with Google</button>
+    <div class="toggle">Don't have an account? <span id="authToggle">Create one</span></div>
   </div>
 </div>
 
-<footer style="position:relative;z-index:1;text-align:center;padding:24px;font-size:.7rem;color:#333">Notes by AA Elements</footer>
+<!-- Notes -->
+<div class="screen" id="notesScreen">
+  <div class="notes-count" id="notesCount"></div>
+  <div class="notes-error" id="notesError"></div>
+  <div class="notes-list" id="notesList"></div>
+  <div class="empty-notes" id="emptyNotes">
+    <div class="icon">📝</div>
+    <h3>No Notes Yet</h3>
+    <p>Tap + to write your first note.</p>
+  </div>
+  <button class="compose-btn" id="composeBtn">+</button>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <button class="cancel-btn" id="modalCancel">Cancel</button>
+      <button class="save-btn" id="modalSave">Save</button>
+    </div>
+    <textarea id="modalText" placeholder="Write something..."></textarea>
+  </div>
+</div>
+
+<footer style="text-align:center;padding:20px;font-size:.65rem;color:#222">Notes by AA Elements</footer>
 
 <script>
-// ═══ FIREBASE CONFIG ═══
-// Replace with your Firebase project config
 const firebaseConfig = {
   apiKey: "AIzaSyDOZvxIIkUicNcewpG1vGUxiBfB1pkOv3w",
   authDomain: "notesapp-fab8a.firebaseapp.com",
@@ -256,7 +269,6 @@ firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
 const db=firebase.firestore();
 
-// ═══ DOM REFS ═══
 const authScreen=document.getElementById('authScreen');
 const notesScreen=document.getElementById('notesScreen');
 const authTitle=document.getElementById('authTitle');
@@ -269,192 +281,131 @@ const authError=document.getElementById('authError');
 const showAuthBtn=document.getElementById('showAuthBtn');
 const signOutBtn=document.getElementById('signOutBtn');
 const userEmail=document.getElementById('userEmail');
-const noteInput=document.getElementById('noteInput');
-const addNoteBtn=document.getElementById('addNoteBtn');
 const notesList=document.getElementById('notesList');
-const emptyNotes=document.getElementById('emptyNotes');
+const notesCount=document.getElementById('notesCount');
 const notesError=document.getElementById('notesError');
+const emptyNotes=document.getElementById('emptyNotes');
+const composeBtn=document.getElementById('composeBtn');
+const modalOverlay=document.getElementById('modalOverlay');
+const modalText=document.getElementById('modalText');
+const modalSave=document.getElementById('modalSave');
+const modalCancel=document.getElementById('modalCancel');
 
 let isSignUp=false;
 let currentUser=null;
 let unsubscribe=null;
+let editingId=null;
 
-// ═══ AUTH ═══
 function showError(msg){authError.textContent=msg;authError.classList.add('show')}
 function hideError(){authError.classList.remove('show')}
 function showNotesError(msg){notesError.textContent=msg;notesError.classList.add('show');setTimeout(()=>notesError.classList.remove('show'),5000)}
-function hideNotesError(){notesError.classList.remove('show')}
 
 authToggle.addEventListener('click',()=>{
   isSignUp=!isSignUp;
   authTitle.textContent=isSignUp?'Create Account':'Sign In';
-  authSub.textContent=isSignUp?'Create an account to start saving notes.':'Access your notes from anywhere.';
+  authSub.textContent=isSignUp?'Create an account to save notes.':'Access your notes anywhere.';
   authBtn.textContent=isSignUp?'Create Account':'Sign In';
   authToggle.textContent=isSignUp?'Sign in':'Create one';
   hideError();
 });
 
 document.getElementById('googleBtn').addEventListener('click',async()=>{
-  try{
-    const provider=new firebase.auth.GoogleAuthProvider();
-    await auth.signInWithPopup(provider);
-  }catch(e){showError(e.message.replace('Firebase: ','').replace(/\(.*\)/,'').trim())}
+  const provider=new firebase.auth.GoogleAuthProvider();
+  try{await auth.signInWithPopup(provider)}catch(e){showError(e.message.replace('Firebase: ','').replace(/\(.*\)/,'').trim())}
 });
 
 authBtn.addEventListener('click',async()=>{
-  const email=authEmail.value.trim();
-  const pass=authPassword.value.trim();
-  if(!email||!pass){showError('Fill in all fields.');return}
-  if(pass.length<6){showError('Password must be at least 6 characters.');return}
-  hideError();
-  authBtn.disabled=true;authBtn.textContent='Loading...';
+  const email=authEmail.value.trim(),pass=authPassword.value.trim();
+  if(!email||!pass)return showError('Fill in all fields.');
+  if(pass.length<6)return showError('Password must be at least 6 characters.');
+  hideError();authBtn.disabled=true;authBtn.textContent='Loading...';
   try{
-    if(isSignUp){
-      await auth.createUserWithEmailAndPassword(email,pass);
-    }else{
-      await auth.signInWithEmailAndPassword(email,pass);
-    }
+    if(isSignUp) await auth.createUserWithEmailAndPassword(email,pass);
+    else await auth.signInWithEmailAndPassword(email,pass);
   }catch(e){
     showError(e.message.replace('Firebase: ','').replace(/\(.*\)/,'').trim());
     authBtn.disabled=false;authBtn.textContent=isSignUp?'Create Account':'Sign In';
   }
 });
 
-showAuthBtn.addEventListener('click',()=>{
-  authScreen.classList.add('active');
-  notesScreen.classList.remove('active');
-  showAuthBtn.style.display='none';
-});
-
-signOutBtn.addEventListener('click',()=>{
-  auth.signOut();
-});
+showAuthBtn.addEventListener('click',()=>{authScreen.classList.add('active');notesScreen.classList.remove('active');showAuthBtn.style.display='none'});
+signOutBtn.addEventListener('click',()=>auth.signOut());
 
 auth.onAuthStateChanged(user=>{
-  authBtn.disabled=false;
-  authBtn.textContent=isSignUp?'Create Account':'Sign In';
+  authBtn.disabled=false;authBtn.textContent=isSignUp?'Create Account':'Sign In';
   if(user){
-    currentUser=user;
-    authScreen.classList.remove('active');
-    notesScreen.classList.add('active');
-    showAuthBtn.style.display='none';
-    signOutBtn.style.display='';
-    userEmail.textContent=user.email;
-    authEmail.value='';authPassword.value='';hideError();
-    loadNotes();
+    currentUser=user;authScreen.classList.remove('active');notesScreen.classList.add('active');
+    showAuthBtn.style.display='none';signOutBtn.style.display='';
+    userEmail.textContent=user.email;authEmail.value='';authPassword.value='';hideError();loadNotes();
   }else{
-    currentUser=null;
-    if(unsubscribe){unsubscribe();unsubscribe=null}
-    authScreen.classList.add('active');
-    notesScreen.classList.remove('active');
-    showAuthBtn.style.display='';
-    signOutBtn.style.display='none';
-    userEmail.textContent='';
-    notesList.innerHTML='';
-    emptyNotes.style.display='block';
+    currentUser=null;unsubscribe&&unsubscribe();unsubscribe=null;
+    authScreen.classList.add('active');notesScreen.classList.remove('active');
+    showAuthBtn.style.display='';signOutBtn.style.display='none';
+    userEmail.textContent='';notesList.innerHTML='';emptyNotes.style.display='block';notesCount.textContent='';
   }
 });
 
-// ═══ NOTES ═══
 function loadNotes(){
   if(!currentUser)return;
-  notesList.innerHTML='<div class="loading-dots"><span></span><span></span><span></span></div>';
-  emptyNotes.style.display='none';
-  unsubscribe=db.collection('notes')
-    .where('uid','==',currentUser.uid)
-    .orderBy('createdAt','desc')
-    .onSnapshot(snapshot=>{
+  notesList.innerHTML='<div class="loading">Loading...</div>';emptyNotes.style.display='none';
+  unsubscribe=db.collection('notes').where('uid','==',currentUser.uid).orderBy('createdAt','desc')
+    .onSnapshot(snap=>{
       notesList.innerHTML='';
-      if(snapshot.empty){emptyNotes.style.display='block';return}
+      if(snap.empty){emptyNotes.style.display='block';notesCount.textContent='';return}
       emptyNotes.style.display='none';
-      snapshot.forEach(doc=>{
-        const data=doc.data();
-        appendNote(doc.id,data.text,data.createdAt?.toDate()||new Date());
-      });
-    },err=>{
-      notesList.innerHTML='<p style="text-align:center;color:#ef4444;font-size:.85rem">Failed to load notes.</p>';
-    });
+      notesCount.textContent=`${snap.size} ${snap.size===1?'note':'notes'}`;
+      snap.forEach(doc=>{const d=doc.data();appendNote(doc.id,d.text,d.createdAt?.toDate()||new Date())});
+    },()=>{notesList.innerHTML='<div class="loading" style="color:#ef4444">Failed to load notes.</div>'});
 }
 
 function appendNote(id,text,date){
-  const div=document.createElement('div');div.className='note-card';
-  div.dataset.id=id;
-  const timeStr=date.toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  const div=document.createElement('div');div.className='note-card';div.dataset.id=id;
+  const lines=text.split('\n');
+  const title=lines[0].trim()||'Untitled';
+  const preview=lines.slice(1).join(' ').trim().slice(0,120)||lines[0].trim().slice(0,120);
+  const timeStr=date.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const charCount=text.length;
   div.innerHTML=`
-    <div class="note-text">${escapeHtml(text)}</div>
-    <div class="note-time">${timeStr}</div>
-    <div class="note-actions">
-      <button class="edit" onclick="editNote('${id}')">✎</button>
-      <button class="delete" onclick="deleteNote('${id}')">✕</button>
-    </div>`;
-  notesList.prepend(div);
+    <div class="note-title">${escapeHtml(title)}</div>
+    ${preview?`<div class="note-preview">${escapeHtml(preview)}</div>`:''}
+    <div class="note-meta">${timeStr}</div>
+    <button class="delete-btn" onclick="event.stopPropagation();deleteNote('${id}')">✕</button>
+    <div class="char-count">${charCount} characters</div>`;
+  div.addEventListener('click',()=>openNote(id,text));
+  notesList.appendChild(div);
 }
 
 function escapeHtml(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
 
-addNoteBtn.addEventListener('click',addNote);
-noteInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();addNote()}});
+composeBtn.addEventListener('click',()=>{editingId=null;modalText.value='';modalOverlay.classList.add('active');setTimeout(()=>modalText.focus(),300)});
+modalCancel.addEventListener('click',closeModal);
+modalOverlay.addEventListener('click',e=>{if(e.target===modalOverlay)closeModal()});
 
-async function addNote(){
-  const text=noteInput.value.trim();
+function closeModal(){modalOverlay.classList.remove('active');modalText.value='';editingId=null}
+
+modalSave.addEventListener('click',async()=>{
+  const text=modalText.value.trim();
   if(!text||!currentUser)return;
-  addNoteBtn.disabled=true;
+  modalSave.disabled=true;modalSave.textContent='Saving...';
   try{
-    await db.collection('notes').add({
-      uid:currentUser.uid,
-      text:text,
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    });
-    noteInput.value='';
-    emptyNotes.style.display='none';
+    if(editingId){
+      await db.collection('notes').doc(editingId).update({text});
+    }else{
+      await db.collection('notes').add({uid:currentUser.uid,text,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    }
+    closeModal();
   }catch(e){showNotesError(e.message)}
-  addNoteBtn.disabled=false;
-}
+  modalSave.disabled=false;modalSave.textContent='Save';
+});
+
+function openNote(id,text){editingId=id;modalText.value=text;modalOverlay.classList.add('active');setTimeout(()=>modalText.focus(),300)}
 
 async function deleteNote(id){
   if(!confirm('Delete this note?'))return;
   try{await db.collection('notes').doc(id).delete()}catch(e){console.error(e)}
 }
 
-function editNote(id){
-  const card=document.querySelector(`.note-card[data-id="${id}"]`);
-  if(!card||card.classList.contains('editing'))return;
-  const textEl=card.querySelector('.note-text');
-  const original=textEl.textContent;
-  card.classList.add('editing');
-  card.innerHTML=`
-    <textarea id="editArea">${escapeHtml(original)}</textarea>
-    <div class="edit-actions">
-      <button class="save" onclick="saveEdit('${id}')">Save</button>
-      <button class="cancel" onclick="cancelEdit('${id}','${escapeHtml(original)}')">Cancel</button>
-    </div>`;
-  card.querySelector('textarea').focus();
-}
-
-async function saveEdit(id){
-  const card=document.querySelector(`.note-card[data-id="${id}"]`);
-  const text=card.querySelector('textarea').value.trim();
-  if(!text)return;
-  try{
-    await db.collection('notes').doc(id).update({text:text});
-  }catch(e){console.error(e)}
-}
-
-function cancelEdit(id,original){
-  const card=document.querySelector(`.note-card[data-id="${id}"]`);
-  if(!card)return;
-  const text=card.querySelector('textarea').value;
-  card.classList.remove('editing');
-  const timeStr=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  card.innerHTML=`
-    <div class="note-text">${escapeHtml(text||original)}</div>
-    <div class="note-time">${timeStr}</div>
-    <div class="note-actions">
-      <button class="edit" onclick="editNote('${id}')">✎</button>
-      <button class="delete" onclick="deleteNote('${id}')">✕</button>
-    </div>`;
-}
-
+modalText.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.metaKey)modalSave.click()});
 </script>
 </body>
 </html>
